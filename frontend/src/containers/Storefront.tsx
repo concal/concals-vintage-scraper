@@ -1,40 +1,36 @@
-import { useEffect, useState } from 'react';
-
-import { Product, SearchFilters } from '../types';
-import { fetchProducts } from '../api/products';
-import { defaultSearchFilters } from '../constants/filters';
 import { ProductCardGrid } from '../components/ProductCardGrid';
+import { ProductFilters } from '../components/ProductFilters';
+import { ProductPaginator } from '../components/ProductPagniator';
+import { useFetchProducts } from '../hooks/useFetchProducts';
+
+const debounce = (fn: Function, ms = 2000) => {
+  let timeoutId: ReturnType<typeof setTimeout>;
+  return function (this: any, ...args: any[]) {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => fn.apply(this, args), ms);
+  };
+};
 
 interface StorefrontProps {}
 
 export function Storefront({}: StorefrontProps) {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [searchFilters, setSearchFilters] =
-    useState<SearchFilters>(defaultSearchFilters);
-
-  useEffect(() => {
-    fetchProducts({
-      filters: searchFilters,
-      onSuccess: (data: Product[]) => {
-        setProducts(data);
-      },
-    });
-  }, [searchFilters]);
+  // TODO: Parse initial filters from URL
+  const { products, onUpdateProductFilters, productFilters } = useFetchProducts(
+    {}
+  );
 
   return (
     <div>
-      Storefront
+      <div className="my-5">
+        <ProductFilters onUpdateFilters={onUpdateProductFilters} />
+      </div>
       <ProductCardGrid products={products} />
-      <button
-        onClick={() =>
-          setSearchFilters({
-            ...searchFilters,
-            page: searchFilters.page + 1,
-          })
-        }
-      >
-        next page
-      </button>
+      <div className="my-5">
+        <ProductPaginator
+          onUpdateProductFilters={onUpdateProductFilters}
+          productFilters={productFilters}
+        />
+      </div>
     </div>
   );
 }

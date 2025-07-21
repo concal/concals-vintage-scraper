@@ -1,14 +1,15 @@
+import { Footer } from './components/Footer';
+import { Header } from './components/Header';
 import { Storefront } from './containers/Storefront';
 
 function App() {
   return (
     <div>
-      <header>
-        <h1>Product Catalog</h1>
-      </header>
+      <Header />
       <div className="main-content">
         <Storefront />
       </div>
+      <Footer />
     </div>
   );
 }

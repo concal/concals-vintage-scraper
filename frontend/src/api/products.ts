@@ -1,10 +1,11 @@
-import { SearchFilters } from '../types';
+import { ProductFilters } from '../types';
+import { productFiltersToJson } from '../utils/productFiltersToJson';
 
 export async function fetchProducts({
   filters,
   onSuccess,
 }: {
-  filters: SearchFilters;
+  filters: ProductFilters;
   onSuccess: (data: any) => void;
 }) {
   // TODO: Deploy backend and update the URL
@@ -13,7 +14,7 @@ export async function fetchProducts({
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(filters),
+    body: productFiltersToJson(filters),
   });
   const data = await response.json();
   onSuccess(data);

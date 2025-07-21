@@ -3,7 +3,7 @@ from datetime import datetime
 from typing import Optional
 
 
-class SearchFilters(BaseModel):
+class ProductFilters(BaseModel):
     id: Optional[str] = Field(default="None", alias="_id")
     available: Optional[bool] = None
     search_term: Optional[str] = None

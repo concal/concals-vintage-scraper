@@ -10,15 +10,25 @@ export interface Product {
   thumbnail_url: string;
 }
 
-export type SortField = 'PUBLISHED_AT' | 'PRICE';
-export type SortDirection = 'ASC' | 'DESC';
+export type SortField =
+  | 'PUBLISHED_AT:ASC'
+  | 'PUBLISHED_AT:DESC'
+  | 'PRICE:ASC'
+  | 'PRICE:DESC';
 
-export interface SearchFilters {
+export interface ProductFilters {
   sort: SortField;
-  sort_direction: SortDirection;
   available?: boolean;
+  price_min?: number;
+  price_max?: number;
   limit: number;
   page: number;
+}
+
+export interface FilterSelectData {
+  key: string;
+  label: string;
+  options: { label: string; value: string }[];
 }
 
 export interface StyleableComponentProps {
