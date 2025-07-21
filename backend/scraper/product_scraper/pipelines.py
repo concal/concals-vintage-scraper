@@ -8,7 +8,7 @@ load_dotenv("../.env")
 
 
 class MongoPipeline:
-    collection_name = os.environ.get('MONGO_COLLECTION_NAME')
+    collection_name = os.environ.get("MONGO_COLLECTION_NAME")
     updates = []
 
     def __init__(self, mongo_uri, mongo_db):
@@ -18,8 +18,8 @@ class MongoPipeline:
     @classmethod
     def from_crawler(cls, crawler):
         return cls(
-            mongo_uri=os.environ.get('MONGO_URI'),
-            mongo_db=os.environ.get('MONGO_DB_NAME'),
+            mongo_uri=os.environ.get("MONGO_URI"),
+            mongo_db=os.environ.get("MONGO_DB_NAME"),
         )
 
     def open_spider(self, spider):
@@ -33,6 +33,9 @@ class MongoPipeline:
 
     def process_item(self, item, spider):
         # store updates for one single bulk upsert
-        self.updates.append(UpdateOne({'_id': item['_id']}, {
-                            '$set': ItemAdapter(item).asdict()}, upsert=True))
+        self.updates.append(
+            UpdateOne(
+                {"_id": item["_id"]}, {"$set": ItemAdapter(item).asdict()}, upsert=True
+            )
+        )
         return item

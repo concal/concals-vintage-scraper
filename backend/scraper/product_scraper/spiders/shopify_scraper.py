@@ -52,7 +52,9 @@ class ShopifyScraperSpider(scrapy.Spider):
                     "sizes": [],
                     "source": stores.get(product_domain),
                     "thumbnail_url": None,
-                    "created_at": datetime.fromisoformat(product.get("created_at", "")),
+                    "published_at": datetime.fromisoformat(
+                        product.get("published_at", "")
+                    ),
                 }
 
                 # Get product URL (handle is the URL slug)
