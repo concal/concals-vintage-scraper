@@ -11,8 +11,8 @@ export function ProductCard({ product }: ProductCardProps) {
     <a
       className="max-w-54"
       href={product.product_url}
-      target="_blank"
       rel="noreferrer"
+      target="_blank"
     >
       <div className="flex flex-col relative">
         <div
@@ -22,11 +22,11 @@ export function ProductCard({ product }: ProductCardProps) {
         >
           <div className="h-72">
             <img
+              alt={product.name}
               className={`max-h-72 max-w-54 object-contain rounded-xl ${
                 !product.available ? 'opacity-50' : ''
               }`}
               src={product.thumbnail_url}
-              alt={product.name}
             />
           </div>
           <span>{product.name}</span>
