@@ -14,6 +14,9 @@
 # env
 .env
 
+# pycache
+/pycache/*
+
 # misc
 .DS_Store
 .env.local
