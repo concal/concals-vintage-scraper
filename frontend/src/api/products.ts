@@ -7,6 +7,7 @@ export async function fetchProducts({
   filters: SearchFilters;
   onSuccess: (data: any) => void;
 }) {
+  // TODO: Deploy backend and update the URL
   const response = await fetch('http://localhost:8000/products/search', {
     method: 'POST',
     headers: {
