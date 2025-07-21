@@ -12,5 +12,5 @@ router = APIRouter()
 @router.get('/all', response_description="List of all products", response_model=List[Product])
 def list_all_products(request: Request):
     products = list(
-        request.app.db[os.environ.get('MONGO_COLLECTION_NAME')].find(limit=100))
+        request.app.db[os.environ.get('MONGO_COLLECTION_NAME')].find())
     return products

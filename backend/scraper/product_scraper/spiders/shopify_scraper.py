@@ -16,6 +16,7 @@ def format_urls(urls):
     return list(map(format_url, urls))
 
 
+# TODO: Store this in DB
 stores = {
     'groupie.store': 'Groupie',
     'lostfilesnyc.com': 'Lost Files NYC',
