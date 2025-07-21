@@ -1,0 +1,10 @@
+# scraping
+scrapy
+
+# db
+pymongo
+
+# apis
+fastapi
+python-dotenv
+uvicorn
