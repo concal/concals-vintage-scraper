@@ -1,36 +1,22 @@
+import { useFetchProducts } from '../hooks/useFetchProducts';
 import { ProductCardGrid } from '../components/ProductCardGrid';
 import { ProductFilters } from '../components/ProductFilters';
 import { ProductPaginator } from '../components/ProductPagniator';
-import { useFetchProducts } from '../hooks/useFetchProducts';
 
-const debounce = (fn: Function, ms = 2000) => {
-  let timeoutId: ReturnType<typeof setTimeout>;
-  return function (this: any, ...args: any[]) {
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => fn.apply(this, args), ms);
-  };
-};
-
-interface StorefrontProps {}
-
-export function Storefront({}: StorefrontProps) {
+export function Storefront() {
   // TODO: Parse initial filters from URL
   const { products, onUpdateProductFilters, productFilters } = useFetchProducts(
     {}
   );
 
   return (
-    <div>
-      <div className="my-5">
-        <ProductFilters onUpdateFilters={onUpdateProductFilters} />
-      </div>
+    <div className="flex flex-col gap-5 py-5">
+      <ProductFilters onUpdateFilters={onUpdateProductFilters} />
       <ProductCardGrid products={products} />
-      <div className="my-5">
-        <ProductPaginator
-          onUpdateProductFilters={onUpdateProductFilters}
-          productFilters={productFilters}
-        />
-      </div>
+      <ProductPaginator
+        onUpdateProductFilters={onUpdateProductFilters}
+        productFilters={productFilters}
+      />
     </div>
   );
 }
