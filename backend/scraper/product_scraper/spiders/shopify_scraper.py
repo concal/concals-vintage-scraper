@@ -6,71 +6,75 @@ from datetime import datetime
 
 def get_domain_from_url(response):
     parsed_uri = urlparse(response.url)
-    domain = '{uri.netloc}'.format(uri=parsed_uri)
+    domain = "{uri.netloc}".format(uri=parsed_uri)
     return domain
 
 
 def format_urls(urls):
     def format_url(url):
-        return f'https://{url}/products.json?limit=250&page=1'
+        return f"https://{url}/products.json?limit=250&page=1"
+
     return list(map(format_url, urls))
 
 
+# TODO: Store this in DB
 stores = {
-    'groupie.store': 'Groupie',
-    'lostfilesnyc.com': 'Lost Files NYC',
-    'twofoldvintage.com': 'Two Fold Vintage',
+    "groupie.store": "Groupie",
+    "lostfilesnyc.com": "Lost Files NYC",
+    "twofoldvintage.com": "Two Fold Vintage",
 }
 
 
 class ShopifyScraperSpider(scrapy.Spider):
-    name = 'shopify_scraper'
+    name = "shopify_scraper"
     allowed_domains = list(stores.keys())
     start_urls = format_urls(stores.keys())
 
     custom_settings = {
-        'ITEM_PIPELINES': {
-            'product_scraper.pipelines.MongoPipeline': 1000,
+        "ITEM_PIPELINES": {
+            "product_scraper.pipelines.MongoPipeline": 1000,
         },
     }
 
     def parse(self, response):
         try:
             data = json.loads(response.text)
-            products = data.get('products', [])
+            products = data.get("products", [])
             product_domain = get_domain_from_url(response)
 
             for product in products:
                 product_data = {
-                    '_id': None,
-                    'available': False,
-                    'name': product.get('title', '').strip(),
-                    'price': None,
-                    'product_url': None,
-                    'sizes': [],
-                    'source': stores.get(product_domain),
-                    'thumbnail_url': None,
-                    'created_at': datetime.fromisoformat(product.get('created_at', ''))
+                    "_id": None,
+                    "available": False,
+                    "name": product.get("title", "").strip(),
+                    "price": None,
+                    "product_url": None,
+                    "sizes": [],
+                    "source": stores.get(product_domain),
+                    "thumbnail_url": None,
+                    "created_at": datetime.fromisoformat(product.get("created_at", "")),
                 }
 
                 # Get product URL (handle is the URL slug)
-                slug = product.get('handle', '')
-                product_data['product_url'] = f"https://{product_domain}/products/{slug}"
+                slug = product.get("handle", "")
+                product_data["product_url"] = (
+                    f"https://{product_domain}/products/{slug}"
+                )
 
                 # Get thumbnail image URL
-                images = product.get('images', [])
-                if (len(images) > 0):
-                    product_data['thumbnail_url'] = images[0].get('src', '')
+                images = product.get("images", [])
+                if len(images) > 0:
+                    product_data["thumbnail_url"] = images[0].get("src", "")
 
                 # Get price and availability
-                variants = product.get('variants', [])
+                variants = product.get("variants", [])
                 prices = []
                 for variant in variants:
-                    price = variant.get('price')
+                    price = variant.get("price")
                     prices.append(int(float(price) * 100))
-                    if (variant.get('available')):
-                        product_data['available'] = True
-                product_data['price'] = min(prices)
+                    if variant.get("available"):
+                        product_data["available"] = True
+                product_data["price"] = min(prices)
 
                 # TODO: # Get size options
                 # sizes = []
@@ -82,7 +86,7 @@ class ShopifyScraperSpider(scrapy.Spider):
                 # product_data['sizes'] = sizes
 
                 # Combines the domain and slug to create the id
-                product_data['_id'] = f"{product_domain}-{slug}"
+                product_data["_id"] = f"{product_domain}-{slug}"
 
                 # Only yield products that have essential data
                 if product_domain and slug:
@@ -92,20 +96,23 @@ class ShopifyScraperSpider(scrapy.Spider):
 
             # If we got 250 products, there might be more pages
             if len(products) == 250:
-                if '?limit=250&page=' in response.url:
+                if "?limit=250&page=" in response.url:
                     # Extract current page number
-                    page_param = response.url.split('page=')[1]
-                    current_page = int(page_param.split(
-                        '&')[0]) if '&' in page_param else int(page_param)
+                    page_param = response.url.split("page=")[1]
+                    current_page = (
+                        int(page_param.split("&")[0])
+                        if "&" in page_param
+                        else int(page_param)
+                    )
                 else:
                     current_page = 1
                 next_page = current_page + 1
-                next_url = f"https://{product_domain}/products.json?limit=250&page={next_page}"
+                next_url = (
+                    f"https://{product_domain}/products.json?limit=250&page={next_page}"
+                )
                 yield response.follow(next_url, callback=self.parse)
 
         except json.JSONDecodeError as e:
-            self.logger.error(
-                f"Failed to parse JSON response from {response.url}: {e}")
+            self.logger.error(f"Failed to parse JSON response from {response.url}: {e}")
         except Exception as e:
-            self.logger.error(
-                f"Error processing products from {response.url}: {e}")
+            self.logger.error(f"Error processing products from {response.url}: {e}")
