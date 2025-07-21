@@ -1,8 +1,7 @@
-import { SearchFilters } from '../types';
+import { ProductFilters } from '../types';
 
-export const defaultSearchFilters: SearchFilters = {
-  sort: 'PUBLISHED_AT',
-  sort_direction: 'DESC',
+export const defaultProductFilters: ProductFilters = {
+  sort: 'PUBLISHED_AT:DESC',
   limit: 60,
   page: 1,
 };

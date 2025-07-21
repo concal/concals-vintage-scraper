@@ -1,40 +1,22 @@
-import { useEffect, useState } from 'react';
-
-import { Product, SearchFilters } from '../types';
-import { fetchProducts } from '../api/products';
-import { defaultSearchFilters } from '../constants/filters';
+import { useFetchProducts } from '../hooks/useFetchProducts';
 import { ProductCardGrid } from '../components/ProductCardGrid';
+import { ProductFilters } from '../components/ProductFilters';
+import { ProductPaginator } from '../components/ProductPagniator';
 
-interface StorefrontProps {}
-
-export function Storefront({}: StorefrontProps) {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [searchFilters, setSearchFilters] =
-    useState<SearchFilters>(defaultSearchFilters);
-
-  useEffect(() => {
-    fetchProducts({
-      filters: searchFilters,
-      onSuccess: (data: Product[]) => {
-        setProducts(data);
-      },
-    });
-  }, [searchFilters]);
+export function Storefront() {
+  // TODO: Parse initial filters from URL
+  const { products, onUpdateProductFilters, productFilters } = useFetchProducts(
+    {}
+  );
 
   return (
-    <div>
-      Storefront
+    <div className="flex flex-col gap-5 py-5">
+      <ProductFilters onUpdateFilters={onUpdateProductFilters} />
       <ProductCardGrid products={products} />
-      <button
-        onClick={() =>
-          setSearchFilters({
-            ...searchFilters,
-            page: searchFilters.page + 1,
-          })
-        }
-      >
-        next page
-      </button>
+      <ProductPaginator
+        onUpdateProductFilters={onUpdateProductFilters}
+        productFilters={productFilters}
+      />
     </div>
   );
 }
