@@ -1,3 +1,7 @@
+export interface StyleableComponentProps {
+  className?: string;
+}
+
 export interface Product {
   _id: string;
   available: boolean;
@@ -23,14 +27,4 @@ export interface ProductFilters {
   price_max?: number;
   limit: number;
   page: number;
-}
-
-export interface FilterSelectData {
-  key: string;
-  label: string;
-  options: { label: string; value: string }[];
-}
-
-export interface StyleableComponentProps {
-  className?: string;
 }

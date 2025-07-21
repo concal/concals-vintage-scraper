@@ -20,17 +20,13 @@ export function Storefront({}: StorefrontProps) {
   );
 
   return (
-    <div>
-      <div className="my-5">
-        <ProductFilters onUpdateFilters={onUpdateProductFilters} />
-      </div>
+    <div className="flex flex-col gap-5 py-5">
+      <ProductFilters onUpdateFilters={onUpdateProductFilters} />
       <ProductCardGrid products={products} />
-      <div className="my-5">
-        <ProductPaginator
-          onUpdateProductFilters={onUpdateProductFilters}
-          productFilters={productFilters}
-        />
-      </div>
+      <ProductPaginator
+        onUpdateProductFilters={onUpdateProductFilters}
+        productFilters={productFilters}
+      />
     </div>
   );
 }
