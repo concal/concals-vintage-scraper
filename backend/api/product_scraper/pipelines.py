@@ -23,16 +23,6 @@ class MongoPipeline:
         )
 
     def open_spider(self, spider):
-        print("=============")
-        print("=============")
-        print("=============")
-        print("=============")
-        print(self.mongo_uri)
-        print(self.mongo_db)
-        print("=============")
-        print("=============")
-        print("=============")
-        print("=============")
         self.client = MongoClient(self.mongo_uri)
         self.db = self.client[self.mongo_db]
 

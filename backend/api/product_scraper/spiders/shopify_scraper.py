@@ -38,13 +38,11 @@ class ShopifyScraperSpider(scrapy.Spider):
 
     def parse(self, response):
         try:
-            print("in parse")
             data = json.loads(response.text)
             products = data.get("products", [])
             product_domain = get_domain_from_url(response)
 
             for product in products:
-                print("Inside of products loop")
                 product_data = {
                     "_id": None,
                     "available": False,

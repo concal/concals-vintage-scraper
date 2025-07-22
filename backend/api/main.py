@@ -4,7 +4,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from pymongo import MongoClient
 from routes import router
-
 import logging
 
 logging.getLogger("pymongo").setLevel(logging.WARN)
