@@ -1,4 +1,9 @@
-ALLOWED_ORIGINS = ["http://localhost:5173/*" "https://concal.me/*", "https://concal.me"]
+ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://localhost:5173/*",
+    "https://concal.me/*",
+    "https://concal.me",
+]
 
 SORT_DIRECTION = {
     "DESC": -1,
