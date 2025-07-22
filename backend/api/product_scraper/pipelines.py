@@ -28,7 +28,8 @@ class MongoPipeline:
 
     def close_spider(self, spider):
         # bulk upsert all updates
-        self.db[self.collection_name].bulk_write(self.updates)
+        if len(self.updates) > 0:
+            self.db[self.collection_name].bulk_write(self.updates)
         self.client.close()
 
     def process_item(self, item, spider):

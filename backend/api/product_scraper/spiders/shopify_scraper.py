@@ -1,4 +1,5 @@
 import json
+import logging
 import scrapy
 from urllib.parse import urlparse
 from datetime import datetime
@@ -38,6 +39,10 @@ class ShopifyScraperSpider(scrapy.Spider):
 
     def parse(self, response):
         try:
+            logging.getLogger("pymongo").setLevel(logging.WARN)
+            logging.getLogger("scrapy").setLevel(logging.WARNING)
+            logging.getLogger("protego").setLevel(logging.WARN)
+
             data = json.loads(response.text)
             products = data.get("products", [])
             product_domain = get_domain_from_url(response)
