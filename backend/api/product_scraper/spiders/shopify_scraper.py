@@ -1,12 +1,15 @@
 import json
 import logging
 import scrapy
+
 from urllib.parse import urlparse
 from datetime import datetime
 
+from constants import STORES
 
-def get_domain_from_url(response):
-    parsed_uri = urlparse(response.url)
+
+def get_domain_from_url(url):
+    parsed_uri = urlparse(url)
     domain = "{uri.netloc}".format(uri=parsed_uri)
     return domain
 
@@ -18,18 +21,10 @@ def format_urls(urls):
     return list(map(format_url, urls))
 
 
-# TODO: Store this in DB
-stores = {
-    "groupie.store": "Groupie",
-    "lostfilesnyc.com": "Lost Files NYC",
-    "twofoldvintage.com": "Two Fold Vintage",
-}
-
-
 class ShopifyScraperSpider(scrapy.Spider):
     name = "shopify_scraper"
-    allowed_domains = list(stores.keys())
-    start_urls = format_urls(stores.keys())
+    allowed_domains = list(STORES.keys())
+    start_urls = format_urls(STORES.keys())
 
     custom_settings = {
         "ITEM_PIPELINES": {
@@ -45,24 +40,24 @@ class ShopifyScraperSpider(scrapy.Spider):
 
             data = json.loads(response.text)
             products = data.get("products", [])
-            product_domain = get_domain_from_url(response)
+            product_domain = get_domain_from_url(response.url)
 
             for product in products:
                 product_data = {
                     "_id": None,
                     "available": False,
-                    "name": product.get("title", "").strip(),
-                    "price": None,
-                    "product_url": None,
-                    "sizes": [],
-                    "source": stores.get(product_domain),
-                    "thumbnail_url": None,
                     "created_at": datetime.fromisoformat(product.get("created_at", "")),
+                    "deleted_by_merchant": False,
                     "published_at": datetime.fromisoformat(
                         product.get("published_at", "")
                     ),
+                    "name": product.get("title", "").strip(),
+                    "price": None,
+                    "product_url": None,
                     "scraped_at": datetime.today(),
-                    "deleted_by_merchant": False,
+                    "sizes": [],
+                    "source": STORES.get(product_domain),
+                    "thumbnail_url": None,
                 }
 
                 # Get product URL (handle is the URL slug)
@@ -101,8 +96,6 @@ class ShopifyScraperSpider(scrapy.Spider):
                 # Only yield products that have essential data
                 if product_domain and slug:
                     yield product_data
-
-            # Check if we need to fetch the next page
 
             # If we got 250 products, there might be more pages
             if len(products) == 250:

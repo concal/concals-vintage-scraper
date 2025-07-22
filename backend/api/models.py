@@ -25,15 +25,15 @@ class Product(BaseModel):
     id: str = Field(alias="_id")
     available: bool = Field()
     created_at: datetime = Field()
+    deleted_by_merchant: bool = Field()
     published_at: datetime = Field()
     name: str = Field()
     price: int = Field()
     product_url: str = Field()
+    scraped_at: datetime = Field()
     sizes: list[str] = Field()
     source: str = Field()
     thumbnail_url: Optional[str] = Field(default=None)
-    scraped_at: datetime = Field()
-    deleted_by_merchant: bool = Field()
 
     class Config:
         validate_by_name = True
@@ -41,11 +41,13 @@ class Product(BaseModel):
             "example": {
                 "_id": "test.domain-super-cool-shirt",
                 "available": True,
-                "published_at": datetime.today(),
+                "created_at": datetime.today(),
+                "deleted_by_merchant": False,
                 "published_at": datetime.today(),
                 "name": "Super cool shirt",
                 "price": 10000,
                 "product_url": "https://google.com",
+                "scraped_at": datetime.today(),
                 "sizes": ["SM"],
                 "source": "Super Cool Store",
                 "thumbnail_url": "https://picsum.photos/200/300",
