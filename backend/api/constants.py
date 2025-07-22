@@ -11,7 +11,7 @@ SORT_DIRECTION = {
 }
 
 SORT_FIELDS = {
-    "CREATED_AT": "created_at",
+    "CREATED_AT": "_id",
     "PUBLISHED_AT": "published_at",
     "PRICE": "price",
 }

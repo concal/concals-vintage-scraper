@@ -4,7 +4,6 @@ from typing import Optional
 
 
 class ProductFilters(BaseModel):
-    id: Optional[str] = Field(default="None", alias="_id")
     available: Optional[bool] = None
     search_term: Optional[str] = None
     price_max: Optional[int] = None
@@ -22,10 +21,10 @@ class ProductFilters(BaseModel):
 
 
 class Product(BaseModel):
-    id: str = Field(alias="_id")
     available: bool = Field()
     created_at: datetime = Field()
     deleted_by_merchant: bool = Field()
+    index: str = Field()
     published_at: datetime = Field()
     name: str = Field()
     price: int = Field()
@@ -39,10 +38,10 @@ class Product(BaseModel):
         validate_by_name = True
         json_schema_extra = {
             "example": {
-                "_id": "test.domain-super-cool-shirt",
                 "available": True,
                 "created_at": datetime.today(),
                 "deleted_by_merchant": False,
+                "index": "test.domain-super-cool-shirt",
                 "published_at": datetime.today(),
                 "name": "Super cool shirt",
                 "price": 10000,

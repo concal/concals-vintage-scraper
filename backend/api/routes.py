@@ -57,7 +57,7 @@ def list_all_products(request: Request, filters: ProductFilters = Body(...)):
 
     products = list(
         request.app.db[os.environ.get("MONGO_COLLECTION_NAME")]
-        .find(query)
+        .find(query, {"_id": False})
         .sort(sort, direction)
         .skip((page - 1) * limit)
         .limit(limit)
