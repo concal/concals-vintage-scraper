@@ -24,6 +24,7 @@ class ProductFilters(BaseModel):
 class Product(BaseModel):
     id: str = Field(alias="_id")
     available: bool = Field()
+    created_at: datetime = Field()
     published_at: datetime = Field()
     name: str = Field()
     price: int = Field()
@@ -31,8 +32,8 @@ class Product(BaseModel):
     sizes: list[str] = Field()
     source: str = Field()
     thumbnail_url: Optional[str] = Field(default=None)
-    scraped_at: Optional[datetime] = Field()
-    deleted_by_merchant: Optional[bool] = Field()
+    scraped_at: datetime = Field()
+    deleted_by_merchant: bool = Field()
 
     class Config:
         validate_by_name = True
@@ -40,6 +41,7 @@ class Product(BaseModel):
             "example": {
                 "_id": "test.domain-super-cool-shirt",
                 "available": True,
+                "published_at": datetime.today(),
                 "published_at": datetime.today(),
                 "name": "Super cool shirt",
                 "price": 10000,
