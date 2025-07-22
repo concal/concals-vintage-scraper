@@ -6,7 +6,8 @@ function App() {
   return (
     <div>
       <Header />
-      <div className="main-content">
+      <div className="px-[5vw] lg:px-[15vw]">
+        {/* <div className="md:main-content-size main-content-padding"> */}
         <Storefront />
       </div>
       <Footer />

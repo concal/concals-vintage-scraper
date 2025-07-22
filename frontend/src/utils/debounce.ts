@@ -1,7 +1,29 @@
-export function debounce(fn: Function, ms = 300) {
-  let timeoutId: ReturnType<typeof setTimeout>;
-  return function (this: any, ...args: any[]) {
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => fn.apply(this, args), ms);
+export const debounce = <F extends (...args: Parameters<F>) => ReturnType<F>>(
+  func: F,
+  waitFor = 300
+) => {
+  let timeout: NodeJS.Timeout;
+
+  const debounced = (...args: Parameters<F>) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), waitFor);
   };
-}
+
+  return debounced;
+};
+
+export const asyncDebounce = <
+  F extends (...args: Parameters<F>) => ReturnType<F>
+>(
+  func: F,
+  waitFor = 300
+) => {
+  let timeout: NodeJS.Timeout;
+
+  const debounced = async (...args: Parameters<F>) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), waitFor);
+  };
+
+  return debounced;
+};
