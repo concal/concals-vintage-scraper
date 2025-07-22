@@ -9,7 +9,7 @@ export function SelectInput({
 }) {
   return (
     <select
-      className="grow pl-1 text-stone-800 border-b-2 border-stone-300 focus:outline-none"
+      className="grow pl-1 text-stone-800 border-b-2 border-stone-300 appearance-none focus:outline-none"
       onChange={onChange}
       value={value}
     >
