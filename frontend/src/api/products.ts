@@ -8,14 +8,17 @@ export async function fetchProducts({
   filters: ProductFilters;
   onSuccess: (data: any) => void;
 }) {
-  // TODO: Deploy backend and update the URL
-  const response = await fetch('http://0.0.0.0:8000/products/search', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: productFiltersToJson(filters),
-  });
+  // TODO: Store url base in environment variables
+  const response = await fetch(
+    'https://reluctant-lura-concal-e5f49e86.koyeb.app/products/search',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: productFiltersToJson(filters),
+    }
+  );
   const data = await response.json();
   onSuccess(data);
 }
