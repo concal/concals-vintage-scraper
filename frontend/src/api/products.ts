@@ -9,13 +9,16 @@ export async function fetchProducts({
   onSuccess: (data: any) => void;
 }) {
   // TODO: Store url base in environment variables
-  const response = await fetch('http://127.0.0.1:8000/products/search', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: productFiltersToJson(filters),
-  });
+  const response = await fetch(
+    'https://reluctant-lura-concal-e5f49e86.koyeb.app/products/search',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: productFiltersToJson(filters),
+    }
+  );
   const data = await response.json();
   onSuccess(data);
 }
