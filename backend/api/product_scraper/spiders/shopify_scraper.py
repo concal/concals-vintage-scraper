@@ -61,6 +61,7 @@ class ShopifyScraperSpider(scrapy.Spider):
                         product.get("published_at", "")
                     ),
                     "scraped_at": datetime.today(),
+                    "deleted_by_merchant": False,
                 }
 
                 # Get product URL (handle is the URL slug)
