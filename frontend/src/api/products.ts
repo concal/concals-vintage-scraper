@@ -9,7 +9,7 @@ export async function fetchProducts({
   onSuccess: (data: any) => void;
 }) {
   // TODO: Deploy backend and update the URL
-  const response = await fetch('http://localhost:8000/products/search', {
+  const response = await fetch('http://0.0.0.0:8000/products/search', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

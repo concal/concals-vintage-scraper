@@ -8,3 +8,4 @@ pymongo
 fastapi
 python-dotenv
 uvicorn
+uv
