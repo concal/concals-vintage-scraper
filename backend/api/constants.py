@@ -1,6 +1,4 @@
-ALLOWED_ORIGINS = [
-    "http://localhost:5173/*" "https://concal.me/*",
-]
+ALLOWED_ORIGINS = ["http://localhost:5173/*" "https://concal.me/*", "https://concal.me"]
 
 SORT_DIRECTION = {
     "DESC": -1,
@@ -17,4 +15,5 @@ STORES = {
     "groupie.store": "Groupie",
     "lostfilesnyc.com": "Lost Files NYC",
     "twofoldvintage.com": "Two Fold Vintage",
+    "finalblowchicago.com": "Final Blow",
 }

@@ -5,7 +5,7 @@ from pymongo import UpdateOne
 from dotenv import load_dotenv
 from itemadapter import ItemAdapter
 
-load_dotenv("../../.env")
+load_dotenv("../.env")
 
 
 class MongoPipeline:
