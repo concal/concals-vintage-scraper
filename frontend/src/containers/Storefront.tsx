@@ -9,9 +9,12 @@ export function Storefront() {
     useFetchProducts({});
 
   return (
-    <div className="px-[5vw] lg:px-[15vw]">
+    <div className="px-[5vw] lg:px-[10vw]">
       <div className="flex flex-col gap-5 py-5">
-        <ProductFilters onUpdateFilters={onUpdateProductFilters} />
+        <ProductFilters
+          onUpdateFilters={onUpdateProductFilters}
+          productFilters={productFilters}
+        />
         <ProductCardGrid products={products} productsLoading={loading} />
         <ProductPaginator
           onUpdateProductFilters={onUpdateProductFilters}

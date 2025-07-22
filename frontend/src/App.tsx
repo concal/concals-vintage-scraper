@@ -4,7 +4,7 @@ import { Storefront } from './containers/Storefront';
 
 function App() {
   return (
-    <div>
+    <div className="font-mono text-sm">
       <Header />
       <Storefront />
       <Footer />

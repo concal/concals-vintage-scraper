@@ -24,8 +24,8 @@ export function ProductCard({ product }: ProductCardProps) {
             <img
               alt={product.name}
               className={`max-h-72 max-w-54 object-contain rounded-xl ${
-                !product.available ? 'opacity-50' : ''
-              }`}
+                !product.available ? '!opacity-50' : ''
+              } fade-in-image`}
               src={product.thumbnail_url}
             />
           </div>
