@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 import { ProductFilters as ProductFiltersType } from '../types';
 import { PriceInput } from './input/PriceInput';
 import { SelectInput } from './input/SelectInput';
+import { StorefrontGridLayout } from './layout/StorefrontGridLayout';
 
 function FilterWrapper({ children }: { children: ReactNode }) {
   return (
@@ -125,12 +126,12 @@ export function ProductFilters({
 
   return (
     <div className="flex justify-center">
-      <div className="w-fit grid gap-4 grid-cols-1 sm:grid-cols-2 xl:grid-cols-4">
+      <StorefrontGridLayout className="lg:!grid-cols-2">
         {sortSelect}
         {availabilityFilterSelect}
         {minPriceInput}
         {maxPriceInput}
-      </div>
+      </StorefrontGridLayout>
     </div>
   );
 }
