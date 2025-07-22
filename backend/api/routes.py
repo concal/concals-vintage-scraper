@@ -1,38 +1,37 @@
 import os
+
 from fastapi import APIRouter, Body, Request
 from typing import List
+
 from models import Product
 from models import ProductFilters
+from constants import SORT_DIRECTION, SORT_FIELDS
 from run_scraper import run_scraper
 from run_cleanup import run_cleanup
 
 
 router = APIRouter()
 
-sort_direction = {
-    "DESC": -1,
-    "ASC": 1,
-}
 
-sort_fields = {
-    "CREATED_AT": "created_at",
-    "PUBLISHED_AT": "published_at",
-    "PRICE": "price",
-}
-
-
-# Serves scrape script at url to be used by cron job
+# ===================
+# = Scrape endpoint =
+# ===================
 @router.get("/scrape", include_in_schema=False)
 def scrape_script():
     run_scraper()
 
 
-# # Serve clean up script at url to be used by cron job
+# ==================
+# = Clean endpoint =
+# ==================
 # @router.get("/clean", include_in_schema=False)
 # def clean_script(request: Request):
 #     run_cleanup(request)
 
 
+# ===================
+# = Search endpoint =
+# ===================
 @router.post(
     "/search", response_description="Search for products", response_model=List[Product]
 )
@@ -49,8 +48,8 @@ def list_all_products(request: Request, filters: ProductFilters = Body(...)):
         query["price"] = {"$gte": filters.price_min, "$lte": filters.price_max}
 
     # sort
-    sort = sort_fields[filters.sort]
-    direction = sort_direction[filters.sort_direction]
+    direction = SORT_DIRECTION[filters.sort_direction]
+    sort = SORT_FIELDS[filters.sort]
 
     # pagination
     limit = filters.limit
