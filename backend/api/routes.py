@@ -36,8 +36,6 @@ def scrape_script():
     "/search", response_description="Search for products", response_model=List[Product]
 )
 def list_all_products(request: Request, filters: ProductFilters = Body(...)):
-    # @router.post("/search", response_description="Search for products")
-    # def list_all_products(request: Request, filters: ProductFilters = Body(...)):
     # filters
     query = {}
     if filters.available is not None:
@@ -57,11 +55,9 @@ def list_all_products(request: Request, filters: ProductFilters = Body(...)):
     limit = filters.limit
     page = filters.page
 
-    print(sort, direction)
-
     products = list(
         request.app.db[os.environ.get("MONGO_COLLECTION_NAME")]
-        .find({}, {"_id": False})
+        .find(query, {"_id": False})
         .sort(sort, direction)
         .skip((page - 1) * limit)
         .limit(limit)
