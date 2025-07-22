@@ -20,7 +20,7 @@ export function ProductCard({ product }: ProductCardProps) {
             product.available ? 'hover:underline' : 'line-through'
           }`}
         >
-          <div className="h-72">
+          <div className="h-72 flex">
             <img
               alt={product.name}
               className={`max-h-72 max-w-54 object-contain rounded-xl ${

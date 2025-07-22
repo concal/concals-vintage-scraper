@@ -21,4 +21,8 @@ STORES = {
     "lostfilesnyc.com": "Lost Files NYC",
     "twofoldvintage.com": "Two Fold Vintage",
     "finalblowchicago.com": "Final Blow",
+    "driewgarments.com": "DRIEW Garments",
+    "xiaoffice.com": "Xia Office",
+    "blindateinc.com": "Blindate",
+    "ypcollective.com": "YP Collective",
 }
