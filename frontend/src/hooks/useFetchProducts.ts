@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { Product, ProductFilters } from '../types';
-import { debounce } from '../utils/debounce';
+import { asyncDebounce } from '../utils/debounce';
 import { fetchProducts } from '../api/products';
 import { defaultProductFilters } from '../constants/filters';
 
-const debouncedFetchProducts = debounce(fetchProducts);
+const debouncedFetchProducts = asyncDebounce(fetchProducts);
 
 interface UseFetchProductsProps {
   initialFilters?: ProductFilters;
@@ -18,28 +18,35 @@ export function useFetchProducts({ initialFilters }: UseFetchProductsProps) {
   );
   const [hasChanges, setHasChanges] = useState(true);
   const [shouldDebounce, setShouldDebounce] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (hasChanges) {
       if (shouldDebounce) {
+        setLoading(true);
         debouncedFetchProducts({
           filters: productFilters,
           onSuccess: (data: Product[]) => {
             setProducts(data);
           },
+        }).then(() => {
+          setLoading(false);
         });
         setShouldDebounce(false);
       } else {
+        setLoading(true);
         fetchProducts({
           filters: productFilters,
           onSuccess: (data: Product[]) => {
             setProducts(data);
           },
+        }).then(() => {
+          setLoading(false);
         });
       }
       setHasChanges(false);
     }
-  }, [hasChanges, productFilters, shouldDebounce]);
+  }, [hasChanges, productFilters, shouldDebounce, setLoading]);
 
   const onUpdateProductFilters = useCallback(
     (updates: Partial<ProductFilters>) => {
@@ -58,9 +65,5 @@ export function useFetchProducts({ initialFilters }: UseFetchProductsProps) {
     [productFilters]
   );
 
-  return {
-    products,
-    onUpdateProductFilters,
-    productFilters,
-  };
+  return { loading, products, onUpdateProductFilters, productFilters };
 }

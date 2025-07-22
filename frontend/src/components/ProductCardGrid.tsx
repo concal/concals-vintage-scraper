@@ -1,15 +1,26 @@
 import { Product } from '../types';
 import { ProductCard } from './ProductCard';
+import { ProductLoadingCardGrid } from './ProductLoadingCardGrid';
 
 interface ProductCardGridProps {
   products: Product[];
+  productsLoading?: boolean;
 }
 
-export function ProductCardGrid({ products }: ProductCardGridProps) {
+export function ProductCardGrid({
+  products,
+  productsLoading,
+}: ProductCardGridProps) {
   return (
     <div className="flex justify-center">
       <div className="w-auto md:w-112 lg:w-auto justify-items-center">
-        <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className={productsLoading ? 'block' : 'hidden'}>
+          <ProductLoadingCardGrid />
+        </div>
+        <div
+          className={`grid gap-4 xs:grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4
+            ${productsLoading ? 'hidden' : 'block'}`}
+        >
           {products.map((product) => (
             <ProductCard key={product._id} product={product} />
           ))}
