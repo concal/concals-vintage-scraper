@@ -1,7 +1,7 @@
 import { ProductFilters } from '../types';
 
 export const defaultProductFilters: ProductFilters = {
-  sort: 'PUBLISHED_AT:DESC',
+  sort: 'CREATED_AT:DESC',
   limit: 60,
   page: 1,
 };

@@ -17,6 +17,8 @@ export interface Product {
 export type SortField =
   | 'PUBLISHED_AT:ASC'
   | 'PUBLISHED_AT:DESC'
+  | 'CREATED_AT:ASC'
+  | 'CREATED_AT:DESC'
   | 'PRICE:ASC'
   | 'PRICE:DESC';
 

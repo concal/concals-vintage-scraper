@@ -68,11 +68,11 @@ export function ProductFilters({
         options={[
           {
             label: 'Newest',
-            value: 'PUBLISHED_AT:DESC',
+            value: 'CREATED_AT:DESC',
           },
           {
             label: 'Oldest',
-            value: 'PUBLISHED_AT:ASC',
+            value: 'CREATED_AT:ASC',
           },
           {
             label: 'Price: high to low',

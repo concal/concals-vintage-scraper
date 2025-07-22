@@ -13,7 +13,7 @@ class ProductFilters(BaseModel):
     source: Optional[str] = None
     limit: Optional[int] = 100
     page: Optional[int] = 1
-    sort: Optional[str] = "PUBLISHED_AT"
+    sort: Optional[str] = "CREATED_AT"
     sort_direction: Optional[str] = "DESC"
 
     class Config:

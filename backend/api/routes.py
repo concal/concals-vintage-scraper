@@ -15,6 +15,7 @@ sort_direction = {
 }
 
 sort_fields = {
+    "CREATED_AT": "created_at",
     "PUBLISHED_AT": "published_at",
     "PRICE": "price",
 }
