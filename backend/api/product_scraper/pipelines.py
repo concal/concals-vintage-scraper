@@ -4,7 +4,7 @@ from pymongo import UpdateOne
 from dotenv import load_dotenv
 from itemadapter import ItemAdapter
 
-load_dotenv("../.env")
+load_dotenv("../../.env")
 
 
 class MongoPipeline:
@@ -23,6 +23,16 @@ class MongoPipeline:
         )
 
     def open_spider(self, spider):
+        print("=============")
+        print("=============")
+        print("=============")
+        print("=============")
+        print(self.mongo_uri)
+        print(self.mongo_db)
+        print("=============")
+        print("=============")
+        print("=============")
+        print("=============")
         self.client = MongoClient(self.mongo_uri)
         self.db = self.client[self.mongo_db]
 
