@@ -13,23 +13,25 @@ from run_cleanup import run_cleanup
 router = APIRouter()
 
 
-# Serves scrape script at url to be used by cron job
+# ===================
+# = Scrape endpoint =
+# ===================
 @router.get("/scrape", include_in_schema=False)
 def scrape_script():
     run_scraper()
 
 
-# # Serve clean up script at url to be used by cron job
+# ==================
+# = Clean endpoint =
+# ==================
 # @router.get("/clean", include_in_schema=False)
 # def clean_script(request: Request):
 #     run_cleanup(request)
 
 
-#
-#
-#  Search endpoint
-#
-#
+# ===================
+# = Search endpoint =
+# ===================
 @router.post(
     "/search", response_description="Search for products", response_model=List[Product]
 )
