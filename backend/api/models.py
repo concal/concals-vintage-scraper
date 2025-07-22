@@ -31,6 +31,8 @@ class Product(BaseModel):
     sizes: list[str] = Field()
     source: str = Field()
     thumbnail_url: Optional[str] = Field(default=None)
+    scraped_at: Optional[datetime] = Field()
+    deleted_by_merchant: Optional[bool] = Field()
 
     class Config:
         validate_by_name = True

@@ -3,7 +3,8 @@ from fastapi import APIRouter, Body, Request
 from typing import List
 from models import Product
 from models import ProductFilters
-from run_scraper import run
+from run_scraper import run_scraper
+from run_cleanup import run_cleanup
 
 
 router = APIRouter()
@@ -22,7 +23,13 @@ sort_fields = {
 # Serves scrape script at url to be used by cron job
 @router.get("/scrape", include_in_schema=False)
 def scrape_script():
-    run()
+    run_scraper()
+
+
+# # Serve clean up script at url to be used by cron job
+# @router.get("/clean", include_in_schema=False)
+# def clean_script(request: Request):
+#     run_cleanup(request)
 
 
 @router.post(
