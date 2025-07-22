@@ -18,7 +18,10 @@ export function ProductCardGrid({
         <div className={productsLoading ? 'block' : 'hidden'}>
           <ProductLoadingCardGrid />
         </div>
-        <StorefrontGridLayout className={productsLoading ? 'hidden' : 'block'}>
+        <StorefrontGridLayout
+          className={productsLoading ? 'hidden' : 'block'}
+          maxColumns={5}
+        >
           {products.map((product) => (
             <ProductCard key={product._id} product={product} />
           ))}
