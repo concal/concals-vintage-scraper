@@ -1,4 +1,5 @@
 import { Product } from '../types';
+import { StorefrontGridLayout } from './layout/StorefrontGridLayout';
 import { ProductCard } from './ProductCard';
 import { ProductLoadingCardGrid } from './ProductLoadingCardGrid';
 
@@ -17,14 +18,11 @@ export function ProductCardGrid({
         <div className={productsLoading ? 'block' : 'hidden'}>
           <ProductLoadingCardGrid />
         </div>
-        <div
-          className={`grid gap-4 xs:grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4
-            ${productsLoading ? 'hidden' : 'block'}`}
-        >
+        <StorefrontGridLayout className={productsLoading ? 'hidden' : 'block'}>
           {products.map((product) => (
             <ProductCard key={product._id} product={product} />
           ))}
-        </div>
+        </StorefrontGridLayout>
       </div>
     </div>
   );
