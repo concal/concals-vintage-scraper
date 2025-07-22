@@ -37,7 +37,9 @@ class MongoPipeline:
         # store updates for one single bulk upsert
         self.updates.append(
             UpdateOne(
-                {"_id": item["_id"]}, {"$set": ItemAdapter(item).asdict()}, upsert=True
+                {"index": item["index"]},
+                {"$set": ItemAdapter(item).asdict()},
+                upsert=True,
             )
         )
         return item

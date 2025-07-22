@@ -25,6 +25,7 @@ class ShopifyScraperSpider(scrapy.Spider):
     name = "shopify_scraper"
     allowed_domains = list(STORES.keys())
     start_urls = format_urls(STORES.keys())
+    download_delay = 2
 
     custom_settings = {
         "ITEM_PIPELINES": {
@@ -41,10 +42,11 @@ class ShopifyScraperSpider(scrapy.Spider):
             data = json.loads(response.text)
             products = data.get("products", [])
             product_domain = get_domain_from_url(response.url)
+            print("scraping: " + product_domain)
 
             for product in products:
                 product_data = {
-                    "_id": None,
+                    "index": None,
                     "available": False,
                     "created_at": datetime.fromisoformat(product.get("created_at", "")),
                     "deleted_by_merchant": False,
@@ -91,7 +93,7 @@ class ShopifyScraperSpider(scrapy.Spider):
                 # product_data['sizes'] = sizes
 
                 # Combines the domain and slug to create the id
-                product_data["_id"] = f"{product_domain}-{slug}"
+                product_data["index"] = f"{product_domain}-{slug}"
 
                 # Only yield products that have essential data
                 if product_domain and slug:
