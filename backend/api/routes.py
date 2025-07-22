@@ -3,6 +3,7 @@ from fastapi import APIRouter, Body, Request
 from typing import List
 from models import Product
 from models import ProductFilters
+from run_scraper import run
 
 
 router = APIRouter()
@@ -16,6 +17,12 @@ sort_fields = {
     "PUBLISHED_AT": "published_at",
     "PRICE": "price",
 }
+
+
+# Serves scrape script at url to be used by cron job
+@router.get("/scrape", include_in_schema=False)
+def scrape_script():
+    run()
 
 
 @router.post(

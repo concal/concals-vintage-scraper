@@ -55,6 +55,7 @@ class ShopifyScraperSpider(scrapy.Spider):
                     "published_at": datetime.fromisoformat(
                         product.get("published_at", "")
                     ),
+                    "scraped_at": datetime.today(),
                 }
 
                 # Get product URL (handle is the URL slug)
