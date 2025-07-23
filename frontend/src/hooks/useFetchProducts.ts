@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 import { Product, ProductFilters } from '../types';
-import { asyncDebounce } from '../utils/debounce';
 import { fetchProducts } from '../api/products';
-import { useSearchParams } from 'react-router-dom';
+import { asyncDebounce } from '../utils/debounce';
 import {
   getFiltersFromSearchParams,
   getSearchParamsFromFilters,

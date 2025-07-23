@@ -7,32 +7,25 @@ interface ProductPaginatorProps {
   productFilters: ProductFilters;
 }
 
-const numberCount = 4;
-
 export function ProductPaginator({
   onUpdateProductFilters,
   productCount,
   productFilters,
 }: ProductPaginatorProps) {
-  const currentPage = productFilters.page || 1;
-  const lastPage = Math.ceil(productCount / productFilters.limit);
-
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
+  const page = productFilters.page;
   const numberCount = windowWidth < 640 ? 3 : 5;
   const numbersPerSide = Math.floor(numberCount / 2);
   const showArrows = windowWidth >= 1024;
+  const currentPage = page || 1;
+  const lastPage = Math.ceil(productCount / productFilters.limit);
 
   useEffect(() => {
-    // Define the event handler function
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
     };
-
-    // Add the event listener when the component mounts
     window.addEventListener('resize', handleResize);
-
-    // Clean up by removing the event listener when the component unmounts
     return () => {
       window.removeEventListener('resize', handleResize);
     };
@@ -71,20 +64,15 @@ export function ProductPaginator({
   );
 
   const renderedNumberButtons = useMemo(() => {
-    let minPageRange =
-      productFilters.page > numbersPerSide
-        ? productFilters.page - numbersPerSide
-        : 1;
+    let minPageRange = page > numbersPerSide ? page - numbersPerSide : 1;
     let maxPageRange =
-      productFilters.page < lastPage - numbersPerSide
-        ? productFilters.page + numbersPerSide
-        : lastPage;
+      page < lastPage - numbersPerSide ? page + numbersPerSide : lastPage;
 
     const result = [];
     for (let i = minPageRange; i <= maxPageRange; i++) {
       result.push(
         <PaginatorButton
-          className={productFilters.page === i ? 'underline' : ''}
+          className={page === i ? 'underline' : ''}
           key={i}
           pageNumber={i}
         >
@@ -101,22 +89,18 @@ export function ProductPaginator({
 
   return (
     <div className="flex justify-center gap-10">
-      {showArrows && productFilters.page > numbersPerSide + 1 && (
-        <PaginatorButton className="cursor-pointer p-x-2" pageNumber={1}>
-          {'<<<'}
-        </PaginatorButton>
+      {showArrows && page > numbersPerSide && (
+        <PaginatorButton pageNumber={1}>{'<<<'}</PaginatorButton>
       )}
-      {productFilters.page !== 1 && (
+      {page !== 1 && (
         <PaginatorButton pageNumber={currentPage - 1}>Previous</PaginatorButton>
       )}
       {renderedNumberButtons}
-      {productFilters.page !== lastPage && (
+      {page !== lastPage && (
         <PaginatorButton pageNumber={currentPage + 1}>Next</PaginatorButton>
       )}
-      {showArrows && productFilters.page < lastPage - numbersPerSide && (
-        <PaginatorButton className="cursor-pointer p-x-2" pageNumber={lastPage}>
-          {'>>>'}
-        </PaginatorButton>
+      {showArrows && page < lastPage - numbersPerSide + 1 && (
+        <PaginatorButton pageNumber={lastPage}>{'>>>'}</PaginatorButton>
       )}
     </div>
   );
