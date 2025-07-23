@@ -3,14 +3,17 @@ import { ProductFilters } from '../types';
 
 interface ProductPaginatorProps {
   onUpdateProductFilters: (updates: Partial<ProductFilters>) => void;
+  productCount: number;
   productFilters: ProductFilters;
 }
 
 export function ProductPaginator({
   onUpdateProductFilters,
+  productCount,
   productFilters,
 }: ProductPaginatorProps) {
   const currentPage = productFilters.page || 1;
+  const hasNextPage = productCount > productFilters.page * productFilters.limit;
 
   const handleUpdateProductFilters = useCallback(
     (updates: Partial<ProductFilters>) => {
@@ -33,15 +36,17 @@ export function ProductPaginator({
           Previous
         </button>
       )}
-      <button
-        onClick={() =>
-          handleUpdateProductFilters({
-            page: currentPage + 1,
-          })
-        }
-      >
-        Next
-      </button>
+      {hasNextPage && (
+        <button
+          onClick={() =>
+            handleUpdateProductFilters({
+              page: currentPage + 1,
+            })
+          }
+        >
+          Next
+        </button>
+      )}
     </div>
   );
 }

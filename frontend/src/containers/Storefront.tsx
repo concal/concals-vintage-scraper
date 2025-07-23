@@ -5,8 +5,13 @@ import { useFetchProducts } from '../hooks/useFetchProducts';
 
 export function Storefront() {
   // TODO: Parse initial filters from URL
-  const { loading, products, onUpdateProductFilters, productFilters } =
-    useFetchProducts({});
+  const {
+    loading,
+    products,
+    onUpdateProductFilters,
+    productFilters,
+    productCount,
+  } = useFetchProducts({});
 
   return (
     <div className="px-[5vw] lg:px-[10vw]">
@@ -18,6 +23,7 @@ export function Storefront() {
         <ProductCardGrid products={products} productsLoading={loading} />
         <ProductPaginator
           onUpdateProductFilters={onUpdateProductFilters}
+          productCount={productCount}
           productFilters={productFilters}
         />
       </div>

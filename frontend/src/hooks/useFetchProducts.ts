@@ -11,8 +11,14 @@ interface UseFetchProductsProps {
   initialFilters?: ProductFilters;
 }
 
+interface ProductResponse {
+  count: number;
+  products: Product[];
+}
+
 export function useFetchProducts({ initialFilters }: UseFetchProductsProps) {
   const [products, setProducts] = useState<Product[]>([]);
+  const [productCount, setProductCount] = useState(0);
   const [productFilters, setProductFilters] = useState<ProductFilters>(
     initialFilters || defaultProductFilters
   );
@@ -26,8 +32,9 @@ export function useFetchProducts({ initialFilters }: UseFetchProductsProps) {
         setLoading(true);
         debouncedFetchProducts({
           filters: productFilters,
-          onSuccess: (data: Product[]) => {
-            setProducts(data);
+          onSuccess: (data: ProductResponse) => {
+            setProducts(data.products);
+            setProductCount(data.count);
           },
         }).then(() => {
           setLoading(false);
@@ -37,8 +44,9 @@ export function useFetchProducts({ initialFilters }: UseFetchProductsProps) {
         setLoading(true);
         fetchProducts({
           filters: productFilters,
-          onSuccess: (data: Product[]) => {
-            setProducts(data);
+          onSuccess: (data: ProductResponse) => {
+            setProducts(data.products);
+            setProductCount(data.count);
           },
         }).then(() => {
           setLoading(false);
@@ -65,5 +73,11 @@ export function useFetchProducts({ initialFilters }: UseFetchProductsProps) {
     [productFilters]
   );
 
-  return { loading, products, onUpdateProductFilters, productFilters };
+  return {
+    loading,
+    products,
+    onUpdateProductFilters,
+    productCount,
+    productFilters,
+  };
 }

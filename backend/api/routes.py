@@ -1,13 +1,10 @@
 import os
 
 from fastapi import APIRouter, Body, Request
-from typing import List
 
-from models import Product
-from models import ProductFilters
+from models import ProductResponse, ProductFilters
 from constants import SORT_DIRECTION, SORT_FIELDS
 from run_scraper import run_scraper
-from run_cleanup import run_cleanup
 
 
 router = APIRouter()
@@ -33,7 +30,9 @@ def scrape_script():
 # = Search endpoint =
 # ===================
 @router.post(
-    "/search", response_description="Search for products", response_model=List[Product]
+    "/search",
+    response_description="Search for products",
+    response_model=ProductResponse,
 )
 def list_all_products(request: Request, filters: ProductFilters = Body(...)):
     # filters
@@ -55,11 +54,13 @@ def list_all_products(request: Request, filters: ProductFilters = Body(...)):
     limit = filters.limit
     page = filters.page
 
-    products = list(
+    all_products = list(
         request.app.db[os.environ.get("MONGO_COLLECTION_NAME")]
         .find(query, {"_id": False})
         .sort(sort, direction)
-        .skip((page - 1) * limit)
-        .limit(limit)
     )
-    return products
+
+    products = all_products[(page - 1) * limit : page * limit]
+    count = len(all_products)
+
+    return {"products": products, "count": count}
