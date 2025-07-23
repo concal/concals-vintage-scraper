@@ -13,8 +13,7 @@ export function ProductPaginator({
   productFilters,
 }: ProductPaginatorProps) {
   const currentPage = productFilters.page || 1;
-  const oogabooga = productFilters.page * productFilters.limit;
-  const hasNextPage = productCount > oogabooga;
+  const hasNextPage = productCount > productFilters.page * productFilters.limit;
 
   const handleUpdateProductFilters = useCallback(
     (updates: Partial<ProductFilters>) => {
