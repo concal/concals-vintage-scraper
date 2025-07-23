@@ -23,6 +23,7 @@ export type SortField =
   | 'PRICE:DESC';
 
 export interface ProductFilters {
+  [index: string]: any;
   sort: SortField;
   available?: boolean;
   price_min?: number;

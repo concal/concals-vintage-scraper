@@ -1,9 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 import { Product, ProductFilters } from '../types';
-import { asyncDebounce } from '../utils/debounce';
 import { fetchProducts } from '../api/products';
-import { defaultProductFilters } from '../constants/filters';
+import { asyncDebounce } from '../utils/debounce';
+import {
+  getFiltersFromSearchParams,
+  getSearchParamsFromFilters,
+} from '../utils/filters';
 
 const debouncedFetchProducts = asyncDebounce(fetchProducts);
 
@@ -17,10 +21,12 @@ interface ProductResponse {
 }
 
 export function useFetchProducts({ initialFilters }: UseFetchProductsProps) {
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const [products, setProducts] = useState<Product[]>([]);
   const [productCount, setProductCount] = useState(0);
   const [productFilters, setProductFilters] = useState<ProductFilters>(
-    initialFilters || defaultProductFilters
+    getFiltersFromSearchParams(searchParams)
   );
   const [hasChanges, setHasChanges] = useState(true);
   const [shouldDebounce, setShouldDebounce] = useState(false);
@@ -68,6 +74,9 @@ export function useFetchProducts({ initialFilters }: UseFetchProductsProps) {
         setShouldDebounce(true);
       }
       setProductFilters({ ...productFilters, ...formattedUpdates });
+      setSearchParams(
+        getSearchParamsFromFilters({ ...productFilters, ...formattedUpdates })
+      );
       setHasChanges(true);
     },
     [productFilters]
