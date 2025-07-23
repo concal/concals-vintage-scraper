@@ -1,6 +1,6 @@
 import { ProductCardGrid } from '../components/ProductCardGrid';
 import { ProductFilters } from '../components/ProductFilters';
-import { ProductPaginator } from '../components/ProductPagniator';
+import { ProductPaginator } from '../components/ProductPaginator';
 import { useFetchProducts } from '../hooks/useFetchProducts';
 
 export function Storefront() {
@@ -21,11 +21,13 @@ export function Storefront() {
           productFilters={productFilters}
         />
         <ProductCardGrid products={products} productsLoading={loading} />
-        <ProductPaginator
-          onUpdateProductFilters={onUpdateProductFilters}
-          productCount={productCount}
-          productFilters={productFilters}
-        />
+        <div className="mt-10">
+          <ProductPaginator
+            onUpdateProductFilters={onUpdateProductFilters}
+            productCount={productCount}
+            productFilters={productFilters}
+          />
+        </div>
       </div>
     </div>
   );
