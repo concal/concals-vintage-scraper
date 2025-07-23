@@ -25,7 +25,7 @@ class ShopifyScraperSpider(scrapy.Spider):
     name = "shopify_scraper"
     allowed_domains = list(STORES.keys())
     start_urls = format_urls(STORES.keys())
-    download_delay = 2
+    download_delay = 0.5
 
     custom_settings = {
         "ITEM_PIPELINES": {
