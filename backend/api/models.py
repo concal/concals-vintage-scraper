@@ -1,4 +1,5 @@
 from pydantic import BaseModel, Field
+from typing import List
 from datetime import datetime
 from typing import Optional
 
@@ -33,6 +34,11 @@ class Product(BaseModel):
     sizes: list[str] = Field()
     source: str = Field()
     thumbnail_url: Optional[str] = Field(default=None)
+
+
+class ProductResponse(BaseModel):
+    products: List[Product] = []
+    count: int = 0
 
     class Config:
         validate_by_name = True

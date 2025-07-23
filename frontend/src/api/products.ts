@@ -10,7 +10,8 @@ export async function fetchProducts({
 }) {
   // TODO: Store url base in environment variables
   const response = await fetch(
-    'https://reluctant-lura-concal-e5f49e86.koyeb.app/products/search',
+    // 'https://reluctant-lura-concal-e5f49e86.koyeb.app/products/search',
+    'http://127.0.0.1:8000/products/search',
     {
       method: 'POST',
       headers: {
