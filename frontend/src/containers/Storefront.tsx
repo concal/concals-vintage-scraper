@@ -1,17 +1,27 @@
+import { useState } from 'react';
 import { ProductCardGrid } from '../components/ProductCardGrid';
 import { ProductFilters } from '../components/ProductFilters';
 import { ProductPaginator } from '../components/ProductPaginator';
 import { useFetchProducts } from '../hooks/useFetchProducts';
+import { useSavedProductIds } from '../hooks/useSavedProductIds';
 
-export function Storefront() {
-  // TODO: Parse initial filters from URL
+interface StorefrontProps {
+  showSaved?: boolean;
+}
+
+export function Storefront({ showSaved }: StorefrontProps) {
+  const { onUpdateSavedProduct, savedProducts } = useSavedProductIds();
+
   const {
     loading,
     products,
     onUpdateProductFilters,
     productFilters,
     productCount,
-  } = useFetchProducts({});
+  } = useFetchProducts({
+    productIndeces: showSaved ? savedProducts : undefined,
+    showSaved,
+  });
 
   return (
     <div className="px-[5vw] lg:px-[10vw]">
@@ -20,7 +30,12 @@ export function Storefront() {
           onUpdateFilters={onUpdateProductFilters}
           productFilters={productFilters}
         />
-        <ProductCardGrid products={products} productsLoading={loading} />
+        <ProductCardGrid
+          onUpdateSavedProduct={onUpdateSavedProduct}
+          products={products}
+          productsLoading={loading}
+          savedProducts={savedProducts}
+        />
         <div className="mt-10">
           <ProductPaginator
             onUpdateProductFilters={onUpdateProductFilters}

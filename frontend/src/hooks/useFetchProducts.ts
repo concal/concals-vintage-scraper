@@ -11,16 +11,18 @@ import {
 
 const debouncedFetchProducts = asyncDebounce(fetchProducts);
 
-interface UseFetchProductsProps {
-  initialFilters?: ProductFilters;
-}
-
 interface ProductResponse {
   count: number;
   products: Product[];
 }
 
-export function useFetchProducts({ initialFilters }: UseFetchProductsProps) {
+export function useFetchProducts({
+  productIndeces,
+  showSaved,
+}: {
+  productIndeces?: string[];
+  showSaved?: boolean;
+}) {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [products, setProducts] = useState<Product[]>([]);
@@ -28,9 +30,18 @@ export function useFetchProducts({ initialFilters }: UseFetchProductsProps) {
   const [productFilters, setProductFilters] = useState<ProductFilters>(
     getFiltersFromSearchParams(searchParams)
   );
-  const [hasChanges, setHasChanges] = useState(true);
+  const [hasChanges, setHasChanges] = useState(!showSaved);
   const [shouldDebounce, setShouldDebounce] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [indecesSet, setIndecesSet] = useState(false);
+
+  useEffect(() => {
+    if (!indecesSet && productIndeces && productIndeces?.length > 0) {
+      setProductFilters({ ...productFilters, product_indeces: productIndeces });
+      setIndecesSet(true);
+      setHasChanges(true);
+    }
+  }, [productIndeces, productFilters]);
 
   useEffect(() => {
     if (hasChanges) {

@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { Footer } from './components/Footer';
 import { Header } from './components/Header';
 import { Storefront } from './containers/Storefront';
@@ -8,7 +8,9 @@ function App() {
     <div className="font-mono text-sm">
       <Header />
       <Routes>
-        <Route path="/" element={<Storefront />} />
+        <Route path="/" element={<Navigate to="/storefront" />} />
+        <Route path="/storefront" element={<Storefront />} />
+        <Route path="/saved" element={<Storefront showSaved={true} />} />
       </Routes>
       <Footer />
     </div>

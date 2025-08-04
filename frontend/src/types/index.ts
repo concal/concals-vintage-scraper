@@ -3,7 +3,7 @@ export interface StyleableComponentProps {
 }
 
 export interface Product {
-  _id: string;
+  index: string;
   available: boolean;
   name: string;
   price: number;
@@ -28,6 +28,7 @@ export interface ProductFilters {
   available?: boolean;
   price_min?: number;
   price_max?: number;
+  product_indeces?: string[];
   limit: number;
   page: number;
 }

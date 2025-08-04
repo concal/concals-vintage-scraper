@@ -1,6 +1,9 @@
 import { ProductFilters } from '../types';
 import { productFiltersToJson } from '../utils/productFiltersToJson';
 
+const URL_BASE = 'http://127.0.0.1:8000/products';
+// const URL_BASE = 'https://reluctant-lura-concal-e5f49e86.koyeb.app/products';
+
 export async function fetchProducts({
   filters,
   onSuccess,
@@ -9,17 +12,59 @@ export async function fetchProducts({
   onSuccess: (data: any) => void;
 }) {
   // TODO: Store url base in environment variables
-  const response = await fetch(
-    'https://reluctant-lura-concal-e5f49e86.koyeb.app/products/search',
-    // 'http://127.0.0.1:8000/products/search',
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: productFiltersToJson(filters),
-    }
-  );
+  const response = await fetch(`${URL_BASE}/search`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: productFiltersToJson(filters),
+  });
   const data = await response.json();
   onSuccess(data);
+}
+
+export async function saveProduct({ productIndex }: { productIndex: string }) {
+  return await fetch(`${URL_BASE}/save`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ productIndex }),
+  });
+}
+
+export async function unsaveProduct({
+  productIndex,
+}: {
+  productIndex: string;
+}) {
+  return await fetch(`${URL_BASE}/unsave`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ productIndex }),
+  });
+}
+
+export async function fetchSavedProductIndeces() {
+  const response = await fetch(`${URL_BASE}/saved-product-ids`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  const data = await response.json();
+  return data;
+}
+
+export async function fetchSavedProducts() {
+  const response = await fetch(`${URL_BASE}/saved-product`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  const data = await response.json();
+  return data;
 }

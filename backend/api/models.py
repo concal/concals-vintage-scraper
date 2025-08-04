@@ -1,7 +1,6 @@
 from pydantic import BaseModel, Field
-from typing import List
+from typing import List, Optional
 from datetime import datetime
-from typing import Optional
 
 
 class ProductFilters(BaseModel):
@@ -9,6 +8,7 @@ class ProductFilters(BaseModel):
     search_term: Optional[str] = None
     price_max: Optional[int] = None
     price_min: Optional[int] = None
+    product_indeces: Optional[List[str]] = None
     sizes: Optional[list[str]] = None
     source: Optional[str] = None
     limit: Optional[int] = 100
@@ -19,6 +19,22 @@ class ProductFilters(BaseModel):
     class Config:
         validate_by_name = True
         json_schema_extra = {"example": {}}
+
+
+class ProductIndexBody(BaseModel):
+    productIndex: str = Field()
+
+    class Config:
+        validate_by_name = True
+        json_schema_extra = {"productIndex": "test-product-index"}
+
+
+class UserBody(BaseModel):
+    username: str = Field()
+
+    class Config:
+        validate_by_name = True
+        json_schema_extra = {"username": "test-user"}
 
 
 class Product(BaseModel):
