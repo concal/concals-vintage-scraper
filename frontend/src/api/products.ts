@@ -1,8 +1,8 @@
 import { ProductFilters } from '../types';
 import { productFiltersToJson } from '../utils/productFiltersToJson';
 
-const URL_BASE = 'http://127.0.0.1:8000/products';
-// const URL_BASE = 'https://reluctant-lura-concal-e5f49e86.koyeb.app/products';
+// const URL_BASE = 'http://127.0.0.1:8000/products';
+const URL_BASE = 'https://reluctant-lura-concal-e5f49e86.koyeb.app/products';
 
 interface saveFunctionProps {
   productIndex: string;
