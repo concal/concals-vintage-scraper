@@ -4,13 +4,17 @@ import { ProductCard } from './ProductCard';
 import { ProductLoadingCardGrid } from './ProductLoadingCardGrid';
 
 interface ProductCardGridProps {
+  onUpdateSavedProduct: Function;
   products: Product[];
   productsLoading?: boolean;
+  savedProducts: string[];
 }
 
 export function ProductCardGrid({
+  onUpdateSavedProduct,
   products,
   productsLoading,
+  savedProducts,
 }: ProductCardGridProps) {
   return (
     <div className="flex justify-center">
@@ -23,7 +27,12 @@ export function ProductCardGrid({
           maxColumns={5}
         >
           {products.map((product) => (
-            <ProductCard key={product._id} product={product} />
+            <ProductCard
+              key={product.index}
+              onUpdateSavedProduct={onUpdateSavedProduct}
+              product={product}
+              saved={savedProducts.includes(product.index)}
+            />
           ))}
         </StorefrontGridLayout>
       </div>

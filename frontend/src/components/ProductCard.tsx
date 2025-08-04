@@ -1,12 +1,22 @@
+import { useState } from 'react';
+
+import { saveProduct, unsaveProduct } from '../api/products';
 import { Product } from '../types';
 import { MerchantBadge } from './MerchantBadge';
 import { Price } from './Price';
+import { SaveButton } from './SaveButton';
 
 interface ProductCardProps {
+  onUpdateSavedProduct: Function;
   product: Product;
+  saved?: boolean;
 }
 
-export function ProductCard({ product }: ProductCardProps) {
+export function ProductCard({
+  onUpdateSavedProduct,
+  product,
+  saved,
+}: ProductCardProps) {
   return (
     <a
       className="max-w-54"
@@ -33,6 +43,17 @@ export function ProductCard({ product }: ProductCardProps) {
           <Price className="me-2" price={product.price} />
         </div>
         <MerchantBadge className="no-underline" name={product.source} />
+        <SaveButton
+          onClick={() => {
+            onUpdateSavedProduct(product.index);
+            if (saved) {
+              unsaveProduct({ productIndex: product.index });
+            } else {
+              saveProduct({ productIndex: product.index });
+            }
+          }}
+          saved={saved}
+        />
         {!product.available && (
           <span className="w-fit text-xs text-stone-800 bg-stone-100  px-2 py-1 rounded-full mr-2 absolute top-2 right-0 no-underline">
             Sold

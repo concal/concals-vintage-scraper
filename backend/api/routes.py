@@ -2,7 +2,7 @@ import os
 
 from fastapi import APIRouter, Body, Request
 
-from models import ProductResponse, ProductFilters
+from models import ProductResponse, ProductFilters, ProductIndexBody
 from constants import SORT_DIRECTION, SORT_FIELDS
 from run_scraper import run_scraper
 
@@ -16,14 +16,6 @@ router = APIRouter()
 @router.get("/scrape", include_in_schema=False)
 def scrape_script():
     run_scraper()
-
-
-# ==================
-# = Clean endpoint =
-# ==================
-# @router.get("/clean", include_in_schema=False)
-# def clean_script(request: Request):
-#     run_cleanup(request)
 
 
 # ===================
@@ -45,6 +37,8 @@ def list_all_products(request: Request, filters: ProductFilters = Body(...)):
         query["price"] = {"$lte": filters.price_max}
     if filters.price_max is not None and filters.price_min is not None:
         query["price"] = {"$gte": filters.price_min, "$lte": filters.price_max}
+    if filters.products is not None:
+        query["index"] = {"$in": filters.products}
 
     # sort
     direction = SORT_DIRECTION[filters.sort_direction]
@@ -64,3 +58,55 @@ def list_all_products(request: Request, filters: ProductFilters = Body(...)):
     count = len(all_products)
 
     return {"products": products, "count": count}
+
+
+# =================
+# = Save endpoint =
+# =================
+@router.post("/save", response_description="Save product")
+def save_product(request: Request, body: ProductIndexBody = Body(...)):
+
+    productIndex = body.productIndex
+    saved_products_collection = request.app.db["saved_products"]
+
+    if saved_products_collection.count_documents({"user": "Concal"}, limit=1) < 1:
+        saved_products_collection.insert_one({"user": "Concal", "products": []})
+
+    saved_products_collection.update_one(
+        {"user": "Concal"}, {"$push": {"products": productIndex}}
+    )
+
+    return {}
+
+
+# ===================
+# = Unsave endpoint =
+# ===================
+@router.post("/unsave", response_description="Unsave product")
+def save_product(request: Request, body: ProductIndexBody = Body(...)):
+
+    productIndex = body.productIndex
+    saved_products_collection = request.app.db["saved_products"]
+
+    if saved_products_collection.count_documents({"user": "Concal"}, limit=1) < 1:
+        saved_products_collection.insert_one({"user": "Concal", "products": []})
+
+    saved_products_collection.update_one(
+        {"user": "Concal"}, {"$pull": {"products": productIndex}}
+    )
+
+    return {}
+
+
+# ===============================
+# = get saved products endpoint =
+# ===============================
+@router.get("/saved-products", response_description="Get saved products")
+def get_saved_products(request: Request):
+
+    saved_products_collection = request.app.db["saved_products"]
+    saved_products = list(saved_products_collection.find({"user": "Concal"}))[0].get(
+        "products"
+    )
+
+    return saved_products
