@@ -4,6 +4,10 @@ import { productFiltersToJson } from '../utils/productFiltersToJson';
 const URL_BASE = 'http://127.0.0.1:8000/products';
 // const URL_BASE = 'https://reluctant-lura-concal-e5f49e86.koyeb.app/products';
 
+interface saveFunctionProps {
+  productIndex: string;
+}
+
 export async function fetchProducts({
   filters,
   onSuccess,
@@ -23,7 +27,7 @@ export async function fetchProducts({
   onSuccess(data);
 }
 
-export async function saveProduct({ productIndex }: { productIndex: string }) {
+export async function saveProduct({ productIndex }: saveFunctionProps) {
   return await fetch(`${URL_BASE}/save`, {
     method: 'POST',
     headers: {
@@ -33,11 +37,7 @@ export async function saveProduct({ productIndex }: { productIndex: string }) {
   });
 }
 
-export async function unsaveProduct({
-  productIndex,
-}: {
-  productIndex: string;
-}) {
+export async function unsaveProduct({ productIndex }: saveFunctionProps) {
   return await fetch(`${URL_BASE}/unsave`, {
     method: 'POST',
     headers: {

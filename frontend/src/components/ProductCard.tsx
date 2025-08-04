@@ -17,8 +17,6 @@ export function ProductCard({
   product,
   saved,
 }: ProductCardProps) {
-  const [currentSaved, setCurrentSaved] = useState(saved);
-
   return (
     <a
       className="max-w-54"
@@ -47,15 +45,14 @@ export function ProductCard({
         <MerchantBadge className="no-underline" name={product.source} />
         <SaveButton
           onClick={() => {
-            setCurrentSaved(!currentSaved);
             onUpdateSavedProduct(product.index);
-            if (currentSaved) {
+            if (saved) {
               unsaveProduct({ productIndex: product.index });
             } else {
               saveProduct({ productIndex: product.index });
             }
           }}
-          saved={currentSaved}
+          saved={saved}
         />
         {!product.available && (
           <span className="w-fit text-xs text-stone-800 bg-stone-100  px-2 py-1 rounded-full mr-2 absolute top-2 right-0 no-underline">

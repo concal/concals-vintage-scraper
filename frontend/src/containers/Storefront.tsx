@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { ProductCardGrid } from '../components/ProductCardGrid';
 import { ProductFilters } from '../components/ProductFilters';
 import { ProductPaginator } from '../components/ProductPaginator';

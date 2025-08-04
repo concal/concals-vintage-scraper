@@ -48,8 +48,6 @@ def list_all_products(request: Request, filters: ProductFilters = Body(...)):
     limit = filters.limit
     page = filters.page
 
-    print(query)
-
     all_products = list(
         request.app.db[os.environ.get("MONGO_COLLECTION_NAME")]
         .find(query, {"_id": False})

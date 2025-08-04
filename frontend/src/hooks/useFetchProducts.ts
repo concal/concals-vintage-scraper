@@ -16,13 +16,15 @@ interface ProductResponse {
   products: Product[];
 }
 
+interface UseFetchProductsProps {
+  savedProducts?: string[];
+  showSaved?: boolean;
+}
+
 export function useFetchProducts({
   savedProducts,
   showSaved,
-}: {
-  savedProducts?: string[];
-  showSaved?: boolean;
-}) {
+}: UseFetchProductsProps) {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [products, setProducts] = useState<Product[]>([]);
