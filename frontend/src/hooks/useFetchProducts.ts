@@ -17,10 +17,10 @@ interface ProductResponse {
 }
 
 export function useFetchProducts({
-  productIndeces,
+  savedProducts,
   showSaved,
 }: {
-  productIndeces?: string[];
+  savedProducts?: string[];
   showSaved?: boolean;
 }) {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -33,15 +33,15 @@ export function useFetchProducts({
   const [hasChanges, setHasChanges] = useState(!showSaved);
   const [shouldDebounce, setShouldDebounce] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [indecesSet, setIndecesSet] = useState(false);
+  const [productsSet, setProductsSet] = useState(false);
 
   useEffect(() => {
-    if (!indecesSet && productIndeces && productIndeces?.length > 0) {
-      setProductFilters({ ...productFilters, product_indeces: productIndeces });
-      setIndecesSet(true);
+    if (!productsSet && savedProducts && savedProducts?.length > 0) {
+      setProductFilters({ ...productFilters, products: savedProducts });
+      setProductsSet(true);
       setHasChanges(true);
     }
-  }, [productIndeces, productFilters]);
+  }, [savedProducts, productFilters]);
 
   useEffect(() => {
     if (hasChanges) {

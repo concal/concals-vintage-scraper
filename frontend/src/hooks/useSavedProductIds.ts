@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { fetchSavedProductIndeces } from '../api/products';
+import { fetchSavedProducts } from '../api/products';
 
 export function useSavedProductIds() {
   const [savedProducts, setSavedProducts] = useState<string[]>([]);
@@ -7,7 +7,7 @@ export function useSavedProductIds() {
 
   useEffect(() => {
     if (!fetched) {
-      fetchSavedProductIndeces().then((resp: any) => {
+      fetchSavedProducts().then((resp: any) => {
         setSavedProducts(resp);
         setFetched(true);
       });

@@ -19,7 +19,7 @@ export function Storefront({ showSaved }: StorefrontProps) {
     productFilters,
     productCount,
   } = useFetchProducts({
-    productIndeces: showSaved ? savedProducts : undefined,
+    savedProducts: showSaved ? savedProducts : undefined,
     showSaved,
   });
 

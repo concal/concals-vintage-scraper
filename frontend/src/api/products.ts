@@ -47,19 +47,8 @@ export async function unsaveProduct({
   });
 }
 
-export async function fetchSavedProductIndeces() {
-  const response = await fetch(`${URL_BASE}/saved-product-ids`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-  const data = await response.json();
-  return data;
-}
-
 export async function fetchSavedProducts() {
-  const response = await fetch(`${URL_BASE}/saved-product`, {
+  const response = await fetch(`${URL_BASE}/saved-products`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',

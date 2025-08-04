@@ -2,7 +2,7 @@ import os
 
 from fastapi import APIRouter, Body, Request
 
-from models import ProductResponse, ProductFilters, ProductIndexBody, UserBody
+from models import ProductResponse, ProductFilters, ProductIndexBody
 from constants import SORT_DIRECTION, SORT_FIELDS
 from run_scraper import run_scraper
 
@@ -16,14 +16,6 @@ router = APIRouter()
 @router.get("/scrape", include_in_schema=False)
 def scrape_script():
     run_scraper()
-
-
-# ==================
-# = Clean endpoint =
-# ==================
-# @router.get("/clean", include_in_schema=False)
-# def clean_script(request: Request):
-#     run_cleanup(request)
 
 
 # ===================
@@ -45,8 +37,8 @@ def list_all_products(request: Request, filters: ProductFilters = Body(...)):
         query["price"] = {"$lte": filters.price_max}
     if filters.price_max is not None and filters.price_min is not None:
         query["price"] = {"$gte": filters.price_min, "$lte": filters.price_max}
-    if filters.product_indeces is not None:
-        query["index"] = {"$in": filters.product_indeces}
+    if filters.products is not None:
+        query["index"] = {"$in": filters.products}
 
     # sort
     direction = SORT_DIRECTION[filters.sort_direction]
@@ -111,7 +103,7 @@ def save_product(request: Request, body: ProductIndexBody = Body(...)):
 # ===============================
 # = get saved products endpoint =
 # ===============================
-@router.get("/saved-product-ids", response_description="Get saved products")
+@router.get("/saved-products", response_description="Get saved products")
 def get_saved_products(request: Request):
 
     saved_products_collection = request.app.db["saved_products"]

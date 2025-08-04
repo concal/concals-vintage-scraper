@@ -28,7 +28,7 @@ export interface ProductFilters {
   available?: boolean;
   price_min?: number;
   price_max?: number;
-  product_indeces?: string[];
+  products?: string[];
   limit: number;
   page: number;
 }
