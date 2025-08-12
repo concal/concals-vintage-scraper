@@ -22,10 +22,11 @@ def format_urls(urls):
     return list(map(format_url, urls))
 
 
-class ShopifyScraperSpider(scrapy.Spider):
-    name = "shopify_scraper"
-    allowed_domains = list(STORES.keys())
-    start_urls = format_urls(STORES.keys())
+class NewStoreShopifyScraperSpider(scrapy.Spider):
+    name = "insert_new_scraper"
+    new_store_keys = ["glam-archive.com"]
+    allowed_domains = new_store_keys
+    start_urls = format_urls(new_store_keys)
     download_delay = 2.5
 
     custom_settings = {
@@ -47,6 +48,9 @@ class ShopifyScraperSpider(scrapy.Spider):
 
             for product in products:
                 product_data = {
+                    "_id": ObjectId.from_datetime(
+                        datetime.fromisoformat(product.get("created_at", ""))
+                    ),
                     "index": None,
                     "available": False,
                     "created_at": datetime.fromisoformat(product.get("created_at", "")),
