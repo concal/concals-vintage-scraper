@@ -24,8 +24,5 @@ STORES = {
     "xiaoffice.com": "Xia Office",
     "blindateinc.com": "Blindate",
     "ypcollective.com": "YP Collective",
-    "ametoravintage.com": "Ametora",
-    "unsoundrags.com": "Unsound Rags",
-    "damagedglitter.com": "Damaged Glitter",
     "glam-archive.com": "GLAM Archive",
 }
