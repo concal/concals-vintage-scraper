@@ -1,6 +1,7 @@
 import os
 
-from fastapi import APIRouter, Body, Request
+from fastapi import APIRouter, Body, Request, BackgroundTasks
+from fastapi.responses import JSONResponse
 
 from models import ProductResponse, ProductFilters, ProductIndexBody
 from constants import SORT_DIRECTION, SORT_FIELDS
@@ -14,8 +15,13 @@ router = APIRouter()
 # = Scrape endpoint =
 # ===================
 @router.get("/scrape", include_in_schema=False)
-def scrape_script():
-    run_scraper()
+def scrape_script(background_tasks: BackgroundTasks):
+    background_tasks.add_task(run_scraper)
+
+    return JSONResponse(
+        content={"status": "success", "message": "Scraper started successfully"},
+        status_code=200,
+    )
 
 
 # ===================

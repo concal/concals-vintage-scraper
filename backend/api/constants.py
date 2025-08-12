@@ -26,7 +26,6 @@ STORES = {
     "ypcollective.com": "YP Collective",
     "ametoravintage.com": "Ametora",
     "unsoundrags.com": "Unsound Rags",
-    "archivestore-official-ec.myshopify.com": "Archive Store JP",
     "damagedglitter.com": "Damaged Glitter",
     "glam-archive.com": "GLAM Archive",
 }
