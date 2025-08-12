@@ -11,7 +11,6 @@ function App() {
         <Route path="/" element={<Navigate to="/storefront" />} />
         <Route path="/storefront" element={<Storefront />} />
         <Route path="/saved" element={<Storefront showSaved={true} />} />
-        <Route path="*" element={<Navigate to="/storefront" />} />
       </Routes>
       <Footer />
     </div>
