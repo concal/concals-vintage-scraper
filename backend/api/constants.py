@@ -17,7 +17,6 @@ SORT_FIELDS = {
 }
 
 STORES = {
-    "groupie.store": "Groupie",
     "lostfilesnyc.com": "Lost Files NYC",
     "twofoldvintage.com": "Two Fold Vintage",
     "finalblowchicago.com": "Final Blow",
@@ -25,4 +24,9 @@ STORES = {
     "xiaoffice.com": "Xia Office",
     "blindateinc.com": "Blindate",
     "ypcollective.com": "YP Collective",
+    "ametoravintage.com": "Ametora",
+    "unsoundrags.com": "Unsound Rags",
+    "archivestore-official-ec.myshopify.com": "Archive Store JP",
+    "damagedglitter.com": "Damaged Glitter",
+    "glam-archive.com": "GLAM Archive",
 }
