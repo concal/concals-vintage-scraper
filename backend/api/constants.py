@@ -1,8 +1,8 @@
 ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://localhost:5173/*",
-    "https://concal.me/*",
-    "https://concal.me",
+    "https://concal.io/*",
+    "https://concal.io",
 ]
 
 SORT_DIRECTION = {
