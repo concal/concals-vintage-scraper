@@ -2,33 +2,29 @@ import { useCallback, useEffect, useState } from 'react';
 import { fetchSavedProducts } from '../api/products';
 
 export function useSavedProductIds() {
-  const [savedProducts, setSavedProducts] = useState<string[]>([]);
-  const [fetched, setFetched] = useState(false);
+  const [savedProducts, setSavedProducts] = useState<Set<string>>(new Set());
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    if (!fetched) {
-      fetchSavedProducts().then((resp: any) => {
-        setSavedProducts(resp);
-        setFetched(true);
-      });
-    }
-  }, [fetched, setFetched, setSavedProducts]);
+    fetchSavedProducts().then(ids => {
+      setSavedProducts(new Set(ids));
+      setIsLoaded(true);
+    });
+  }, []);
 
-  const onUpdateSavedProduct = useCallback(
-    (productIndex: string) => {
-      if (savedProducts.includes(productIndex)) {
-        const newArr = savedProducts.filter(
-          (product) => product !== productIndex
-        );
-        setSavedProducts(newArr);
+  // Functional updater means this callback never needs to close over savedProducts,
+  // so it is referentially stable for the lifetime of the component.
+  const onUpdateSavedProduct = useCallback((productIndex: string) => {
+    setSavedProducts(prev => {
+      const next = new Set(prev);
+      if (next.has(productIndex)) {
+        next.delete(productIndex);
       } else {
-        const newArr = [...savedProducts];
-        newArr.push(productIndex);
-        setSavedProducts(newArr);
+        next.add(productIndex);
       }
-    },
-    [savedProducts]
-  );
+      return next;
+    });
+  }, []);
 
-  return { onUpdateSavedProduct, savedProducts };
+  return { isLoaded, onUpdateSavedProduct, savedProducts };
 }

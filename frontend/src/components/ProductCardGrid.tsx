@@ -7,7 +7,7 @@ interface ProductCardGridProps {
   onUpdateSavedProduct: (index: string) => void;
   products: Product[];
   productsLoading?: boolean;
-  savedProducts: string[];
+  savedProducts: Set<string>;
 }
 
 export function ProductCardGrid({
@@ -25,7 +25,7 @@ export function ProductCardGrid({
               key={product.index}
               onUpdateSavedProduct={onUpdateSavedProduct}
               product={product}
-              saved={savedProducts.includes(product.index)}
+              saved={savedProducts.has(product.index)}
             />
           ))}
     </StorefrontGridLayout>
