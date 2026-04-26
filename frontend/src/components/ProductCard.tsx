@@ -1,13 +1,12 @@
-import { useState } from 'react';
-
 import { saveProduct, unsaveProduct } from '../api/products';
 import { Product } from '../types';
-import { MerchantBadge } from './MerchantBadge';
-import { Price } from './Price';
 import { SaveButton } from './SaveButton';
+import { Badge } from '@/generated/components/ui/badge';
+import { Card, CardContent } from '@/generated/components/ui/card';
+import { cn } from '@/generated/lib/utils';
 
 interface ProductCardProps {
-  onUpdateSavedProduct: Function;
+  onUpdateSavedProduct: (index: string) => void;
   product: Product;
   saved?: boolean;
 }
@@ -19,30 +18,33 @@ export function ProductCard({
 }: ProductCardProps) {
   return (
     <a
-      className="max-w-54"
+      className="no-underline"
       href={product.product_url}
       rel="noreferrer"
       target="_blank"
     >
-      <div className="flex flex-col relative">
-        <div
-          className={`flex flex-col ${
-            product.available ? 'hover:underline' : 'line-through'
-          }`}
-        >
-          <div className="h-72 flex">
-            <img
-              alt={product.name}
-              className={`max-h-72 max-w-54 object-contain rounded-xl ${
-                !product.available ? '!opacity-50' : ''
-              } fade-in-image`}
-              src={product.thumbnail_url}
-            />
-          </div>
-          <span>{product.name}</span>
-          <Price className="me-2" price={product.price} />
-        </div>
-        <MerchantBadge className="no-underline" name={product.source} />
+      <Card className={cn('relative h-full', !product.available && 'opacity-60')}>
+        <img
+          alt={product.name}
+          className="max-h-72 w-full object-contain fade-in-image"
+          src={product.thumbnail_url}
+        />
+        <CardContent className="flex flex-col gap-1 grow">
+          <span
+            className={cn(
+              'line-clamp-2',
+              product.available
+                ? 'group-hover/card:underline underline-offset-2'
+                : 'line-through'
+            )}
+          >
+            {product.name}
+          </span>
+          <span className="text-lg font-semibold text-foreground mt-auto pt-1">
+            ${(product.price / 100).toFixed(2)}
+          </span>
+          <Badge variant="secondary">{product.source}</Badge>
+        </CardContent>
         <SaveButton
           onClick={() => {
             onUpdateSavedProduct(product.index);
@@ -55,11 +57,11 @@ export function ProductCard({
           saved={saved}
         />
         {!product.available && (
-          <span className="w-fit text-xs text-stone-800 bg-stone-100  px-2 py-1 rounded-full mr-2 absolute top-2 right-0 no-underline">
+          <Badge variant="secondary" className="absolute top-2 right-2">
             Sold
-          </span>
+          </Badge>
         )}
-      </div>
+      </Card>
     </a>
   );
 }

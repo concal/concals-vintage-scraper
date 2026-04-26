@@ -1,10 +1,10 @@
 import { Product } from '../types';
 import { StorefrontGridLayout } from './layout/StorefrontGridLayout';
 import { ProductCard } from './ProductCard';
-import { ProductLoadingCardGrid } from './ProductLoadingCardGrid';
+import { ProductLoadingCard } from './ProductLoadingCardGrid';
 
 interface ProductCardGridProps {
-  onUpdateSavedProduct: Function;
+  onUpdateSavedProduct: (index: string) => void;
   products: Product[];
   productsLoading?: boolean;
   savedProducts: string[];
@@ -17,16 +17,10 @@ export function ProductCardGrid({
   savedProducts,
 }: ProductCardGridProps) {
   return (
-    <div className="flex justify-center">
-      <div className="w-auto md:w-112 lg:w-auto justify-items-center">
-        <div className={productsLoading ? 'block' : 'hidden'}>
-          <ProductLoadingCardGrid />
-        </div>
-        <StorefrontGridLayout
-          className={productsLoading ? 'hidden' : 'block'}
-          maxColumns={5}
-        >
-          {products.map((product) => (
+    <StorefrontGridLayout>
+      {productsLoading
+        ? Array.from({ length: 12 }, (_, i) => <ProductLoadingCard key={i} />)
+        : products.map((product) => (
             <ProductCard
               key={product.index}
               onUpdateSavedProduct={onUpdateSavedProduct}
@@ -34,8 +28,6 @@ export function ProductCardGrid({
               saved={savedProducts.includes(product.index)}
             />
           ))}
-        </StorefrontGridLayout>
-      </div>
-    </div>
+    </StorefrontGridLayout>
   );
 }

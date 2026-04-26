@@ -1,3 +1,5 @@
+import { Input } from '@/generated/components/ui/input';
+
 export function PriceInput({
   onChange,
   placeholder,
@@ -8,20 +10,16 @@ export function PriceInput({
   value?: number;
 }) {
   return (
-    <div className="flex flex-row items-center pl-1 text-stone-800 border-b-2 border-stone-300">
-      <span
-        className={value !== undefined ? 'text-stone-800' : 'text-stone-400'}
-      >
-        $
-      </span>
-      <input
-        className="grow appearance-none focus:outline-none placeholder:text-stone-400"
+    <div className="relative flex items-center flex-1 md:flex-none md:w-38">
+      <span className="absolute left-2.5 text-muted-foreground pointer-events-none">$</span>
+      <Input
+        className="pl-6"
         min="0"
         step="1"
         onChange={onChange}
         placeholder={placeholder}
         type="number"
-        value={value ? `${value / 100}` : undefined}
+        value={value !== undefined ? `${value / 100}` : ''}
       />
     </div>
   );

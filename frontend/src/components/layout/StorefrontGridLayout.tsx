@@ -1,20 +1,14 @@
 import { ReactNode } from 'react';
+import { cn } from '@/generated/lib/utils';
 
 interface StorefrontGridLayoutProps {
   children: ReactNode;
   className?: string;
-  maxColumns?: number;
 }
 
-export function StorefrontGridLayout({
-  children,
-  className = '',
-  maxColumns = 4,
-}: StorefrontGridLayoutProps) {
+export function StorefrontGridLayout({ children, className }: StorefrontGridLayoutProps) {
   return (
-    <div
-      className={`grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:!grid-cols-4 2xl:!grid-cols-${maxColumns} ${className}`}
-    >
+    <div className={cn('grid grid-cols-[repeat(1,13.5rem)] md:grid-cols-[repeat(2,13.5rem)] lg:grid-cols-[repeat(3,13.5rem)] xl:grid-cols-[repeat(4,13.5rem)] gap-4 justify-center', className)}>
       {children}
     </div>
   );
