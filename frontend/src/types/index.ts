@@ -1,7 +1,3 @@
-export interface StyleableComponentProps {
-  className?: string;
-}
-
 export interface Product {
   index: string;
   available: boolean;

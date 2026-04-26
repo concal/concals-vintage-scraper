@@ -1,5 +1,27 @@
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
+import { ChevronsLeft, ChevronsRight } from 'lucide-react';
 import { ProductFilters } from '../types';
+import { Button } from '@/generated/components/ui/button';
+import { cn } from '@/generated/lib/utils';
+
+interface PaginatorButtonProps {
+  children: ReactNode;
+  className?: string;
+  onGoToPage: (page: number) => void;
+  pageNumber: number;
+}
+
+function PaginatorButton({ children, className, onGoToPage, pageNumber }: PaginatorButtonProps) {
+  return (
+    <Button
+      variant="ghost"
+      className={className}
+      onClick={() => onGoToPage(pageNumber)}
+    >
+      {children}
+    </Button>
+  );
+}
 
 interface ProductPaginatorProps {
   onUpdateProductFilters: (updates: Partial<ProductFilters>) => void;
@@ -22,58 +44,31 @@ export function ProductPaginator({
   const lastPage = Math.ceil(productCount / productFilters.limit);
 
   useEffect(() => {
-    const handleResize = () => {
-      setWindowWidth(window.innerWidth);
-    };
+    const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const handleUpdateProductFilters = useCallback(
-    (updates: Partial<ProductFilters>) => {
+  const goToPage = useCallback(
+    (page: number) => {
       window.scrollTo(0, 0);
-      onUpdateProductFilters(updates);
+      onUpdateProductFilters({ page });
     },
     [onUpdateProductFilters]
   );
 
-  const PaginatorButton = useCallback(
-    ({
-      pageNumber,
-      className,
-      children,
-    }: {
-      children: ReactNode;
-      className?: string;
-      pageNumber: number;
-    }) => (
-      <button
-        className={`cursor-pointer p-x-2 ${className}`}
-        onClick={() =>
-          handleUpdateProductFilters({
-            page: pageNumber,
-          })
-        }
-      >
-        {children}
-      </button>
-    ),
-    [handleUpdateProductFilters]
-  );
-
   const renderedNumberButtons = useMemo(() => {
-    let minPageRange = page > numbersPerSide ? page - numbersPerSide : 1;
-    let maxPageRange =
+    const minPageRange = page > numbersPerSide ? page - numbersPerSide : 1;
+    const maxPageRange =
       page < lastPage - numbersPerSide ? page + numbersPerSide : lastPage;
 
     const result = [];
     for (let i = minPageRange; i <= maxPageRange; i++) {
       result.push(
         <PaginatorButton
-          className={page === i ? 'underline' : ''}
+          className={cn(page === i && 'font-semibold underline underline-offset-4')}
           key={i}
+          onGoToPage={goToPage}
           pageNumber={i}
         >
           {i}
@@ -81,26 +76,34 @@ export function ProductPaginator({
       );
     }
     return result;
-  }, [lastPage, numbersPerSide, productCount, productFilters]);
+  }, [page, numbersPerSide, lastPage, goToPage]);
 
   if (productCount < productFilters.limit) {
     return null;
   }
 
   return (
-    <div className="flex justify-center gap-10">
+    <div className="flex justify-center gap-2">
       {showArrows && page > numbersPerSide && (
-        <PaginatorButton pageNumber={1}>{'<<<'}</PaginatorButton>
+        <PaginatorButton onGoToPage={goToPage} pageNumber={1}>
+          <ChevronsLeft className="size-4" />
+        </PaginatorButton>
       )}
       {page !== 1 && (
-        <PaginatorButton pageNumber={currentPage - 1}>Previous</PaginatorButton>
+        <PaginatorButton onGoToPage={goToPage} pageNumber={currentPage - 1}>
+          Previous
+        </PaginatorButton>
       )}
       {renderedNumberButtons}
       {page !== lastPage && (
-        <PaginatorButton pageNumber={currentPage + 1}>Next</PaginatorButton>
+        <PaginatorButton onGoToPage={goToPage} pageNumber={currentPage + 1}>
+          Next
+        </PaginatorButton>
       )}
       {showArrows && page < lastPage - numbersPerSide + 1 && (
-        <PaginatorButton pageNumber={lastPage}>{'>>>'}</PaginatorButton>
+        <PaginatorButton onGoToPage={goToPage} pageNumber={lastPage}>
+          <ChevronsRight className="size-4" />
+        </PaginatorButton>
       )}
     </div>
   );
