@@ -1,19 +1,22 @@
 import { useCallback, useEffect, useState } from 'react';
 import { fetchSavedProducts } from '../api/products';
 
-export function useSavedProductIds() {
+export function useSavedProductIds(token: string | null) {
   const [savedProducts, setSavedProducts] = useState<Set<string>>(new Set());
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    fetchSavedProducts().then(ids => {
+    if (!token) {
+      setSavedProducts(new Set());
+      setIsLoaded(true);
+      return;
+    }
+    fetchSavedProducts(token).then(ids => {
       setSavedProducts(new Set(ids));
       setIsLoaded(true);
     });
-  }, []);
+  }, [token]);
 
-  // Functional updater means this callback never needs to close over savedProducts,
-  // so it is referentially stable for the lifetime of the component.
   const onUpdateSavedProduct = useCallback((productIndex: string) => {
     setSavedProducts(prev => {
       const next = new Set(prev);

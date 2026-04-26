@@ -10,6 +10,11 @@ interface ProductSearchResponse {
 
 interface SaveProductProps {
   productIndex: string;
+  token: string;
+}
+
+function authHeaders(token: string) {
+  return { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
 }
 
 export async function fetchProducts({
@@ -28,23 +33,33 @@ export async function fetchProducts({
   return response.json();
 }
 
-export function saveProduct({ productIndex }: SaveProductProps): Promise<Response> {
+export function saveProduct({ productIndex, token }: SaveProductProps): Promise<Response> {
   return fetch(`${URL_BASE}/save`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: authHeaders(token),
     body: JSON.stringify({ productIndex }),
   });
 }
 
-export function unsaveProduct({ productIndex }: SaveProductProps): Promise<Response> {
+export function unsaveProduct({ productIndex, token }: SaveProductProps): Promise<Response> {
   return fetch(`${URL_BASE}/unsave`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: authHeaders(token),
     body: JSON.stringify({ productIndex }),
   });
 }
 
-export async function fetchSavedProducts(): Promise<string[]> {
-  const response = await fetch(`${URL_BASE}/saved-products`);
+export async function fetchSavedProducts(token: string): Promise<string[]> {
+  const response = await fetch(`${URL_BASE}/saved-products`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!response.ok) return [];
   return response.json();
+}
+
+export async function validateToken(token: string): Promise<boolean> {
+  const response = await fetch(`${URL_BASE}/auth`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return response.ok;
 }
