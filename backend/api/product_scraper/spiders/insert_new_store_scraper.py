@@ -47,17 +47,20 @@ class NewStoreShopifyScraperSpider(scrapy.Spider):
             print("scraping: " + product_domain)
 
             for product in products:
+                try:
+                    created_at = datetime.fromisoformat(product.get("created_at", ""))
+                    published_at = datetime.fromisoformat(product.get("published_at", ""))
+                except ValueError:
+                    self.logger.warning(f"Skipping product with bad date: {product.get('title')}")
+                    continue
+
                 product_data = {
-                    "_id": ObjectId.from_datetime(
-                        datetime.fromisoformat(product.get("created_at", ""))
-                    ),
+                    "_id": ObjectId.from_datetime(created_at),
                     "index": None,
                     "available": False,
-                    "created_at": datetime.fromisoformat(product.get("created_at", "")),
+                    "created_at": created_at,
                     "deleted_by_merchant": False,
-                    "published_at": datetime.fromisoformat(
-                        product.get("published_at", "")
-                    ),
+                    "published_at": published_at,
                     "name": product.get("title", "").strip(),
                     "price": None,
                     "product_url": None,
@@ -83,9 +86,14 @@ class NewStoreShopifyScraperSpider(scrapy.Spider):
                 prices = []
                 for variant in variants:
                     price = variant.get("price")
+                    if price is None:
+                        continue
                     prices.append(int(float(price) * 100))
                     if variant.get("available"):
                         product_data["available"] = True
+                if not prices:
+                    self.logger.warning(f"Skipping product with no valid prices: {product.get('title')}")
+                    continue
                 product_data["price"] = min(prices)
 
                 # TODO: # Get size options

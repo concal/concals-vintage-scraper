@@ -13,6 +13,11 @@ export function Header() {
   const { pathname } = useLocation();
   const [loginOpen, setLoginOpen] = useState(false);
 
+  function handleLogout() {
+    logout();
+    window.location.href = '/storefront';
+  }
+
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-sm">
       <div className="flex items-center justify-between px-6 py-3">
@@ -33,7 +38,7 @@ export function Header() {
             </Button>
           ))}
           {isAuthed ? (
-            <Button variant="ghost" size="sm" onClick={logout}>
+            <Button variant="ghost" size="sm" onClick={handleLogout}>
               Logout
             </Button>
           ) : (

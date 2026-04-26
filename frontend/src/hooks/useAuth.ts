@@ -6,10 +6,14 @@ const TOKEN_KEY = 'admin_token';
 export function useAuth() {
   const [token, setToken] = useState<string | null>(null);
   const [isAuthed, setIsAuthed] = useState(false);
+  const [isAuthLoading, setIsAuthLoading] = useState(true);
 
   useEffect(() => {
     const stored = localStorage.getItem(TOKEN_KEY);
-    if (!stored) return;
+    if (!stored) {
+      setIsAuthLoading(false);
+      return;
+    }
     validateToken(stored).then(valid => {
       if (valid) {
         setToken(stored);
@@ -17,6 +21,7 @@ export function useAuth() {
       } else {
         localStorage.removeItem(TOKEN_KEY);
       }
+      setIsAuthLoading(false);
     });
   }, []);
 
@@ -32,5 +37,5 @@ export function useAuth() {
     setIsAuthed(false);
   }, []);
 
-  return { token, isAuthed, login, logout };
+  return { token, isAuthed, isAuthLoading, login, logout };
 }

@@ -3,7 +3,7 @@ import os
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from pymongo import MongoClient
+from pymongo import MongoClient, ASCENDING, DESCENDING
 from dotenv import load_dotenv
 
 from constants import ALLOWED_ORIGINS
@@ -23,6 +23,11 @@ async def lifespan(app: FastAPI):
         print("Successfully connected to MongoDB!")
     except Exception as e:
         print(e)
+
+    collection = app.db[os.environ.get("MONGO_COLLECTION_NAME")]
+    collection.create_index([("price", ASCENDING)])
+    collection.create_index([("available", ASCENDING)])
+    collection.create_index([("available", ASCENDING), ("price", ASCENDING)])
     yield
     # Close client connection on shutdown
     app.client.close()

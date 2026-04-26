@@ -51,12 +51,13 @@ def list_all_products(request: Request, filters: ProductFilters = Body(...)):
     query = {}
     if filters.available is not None:
         query["available"] = filters.available
+    price_query = {}
     if filters.price_min is not None:
-        query["price"] = {"$gte": filters.price_min}
+        price_query["$gte"] = filters.price_min
     if filters.price_max is not None:
-        query["price"] = {"$lte": filters.price_max}
-    if filters.price_max is not None and filters.price_min is not None:
-        query["price"] = {"$gte": filters.price_min, "$lte": filters.price_max}
+        price_query["$lte"] = filters.price_max
+    if price_query:
+        query["price"] = price_query
     if filters.products is not None:
         query["index"] = {"$in": filters.products}
 
@@ -68,14 +69,15 @@ def list_all_products(request: Request, filters: ProductFilters = Body(...)):
     limit = filters.limit
     page = filters.page
 
-    all_products = list(
-        request.app.db[os.environ.get("MONGO_COLLECTION_NAME")]
+    collection = request.app.db[os.environ.get("MONGO_COLLECTION_NAME")]
+    count = collection.count_documents(query)
+    products = list(
+        collection
         .find(query, {"_id": False})
         .sort(sort, direction)
+        .skip((page - 1) * limit)
+        .limit(limit)
     )
-
-    products = all_products[(page - 1) * limit : page * limit]
-    count = len(all_products)
 
     return {"products": products, "count": count}
 
