@@ -1,27 +1,23 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import { Product, ProductFilters } from '../types';
 import { fetchProducts } from '../api/products';
-import { asyncDebounce } from '../utils/debounce';
 import {
   getFiltersFromSearchParams,
   getSearchParamsFromFilters,
 } from '../utils/filters';
 
-const debouncedFetchProducts = asyncDebounce(fetchProducts);
-
-interface ProductResponse {
-  count: number;
-  products: Product[];
-}
+const PRICE_DEBOUNCE_MS = 300;
 
 interface UseFetchProductsProps {
-  savedProducts?: string[];
+  isSavedProductsLoaded: boolean;
+  savedProducts: Set<string>;
   showSaved?: boolean;
 }
 
 export function useFetchProducts({
+  isSavedProductsLoaded,
   savedProducts,
   showSaved,
 }: UseFetchProductsProps) {
@@ -29,77 +25,94 @@ export function useFetchProducts({
 
   const [products, setProducts] = useState<Product[]>([]);
   const [productCount, setProductCount] = useState(0);
+  const [loading, setLoading] = useState(true);
   const [productFilters, setProductFilters] = useState<ProductFilters>(
     getFiltersFromSearchParams(searchParams)
   );
-  const [hasChanges, setHasChanges] = useState(!showSaved);
-  const [shouldDebounce, setShouldDebounce] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [productsSet, setProductsSet] = useState(false);
 
+  // For price inputs: signal the fetch effect to debounce the next request.
+  const shouldDebounceRef = useRef(false);
+
+  // For the saved view: delay fetching until saved product IDs have been injected
+  // into productFilters. On the standard storefront view this starts as true.
+  const initializedRef = useRef(!showSaved);
+
+  // ─── Main fetch effect ────────────────────────────────────────────────────
+  // Declared first so it runs before the initialization effect on mount.
+  // This ensures the saved-view guard (initializedRef = false) is respected on
+  // the very first render before the initialization effect has had a chance to run.
   useEffect(() => {
-    if (!productsSet && savedProducts && savedProducts?.length > 0) {
-      setProductFilters({ ...productFilters, products: savedProducts });
-      setProductsSet(true);
-      setHasChanges(true);
-    }
-  }, [savedProducts, productFilters]);
+    if (!initializedRef.current) return;
 
+    const controller = new AbortController();
+    let debounceTimer: ReturnType<typeof setTimeout> | null = null;
+
+    const doFetch = () => {
+      setLoading(true);
+      fetchProducts({ filters: productFilters, signal: controller.signal })
+        .then(({ products, count }) => {
+          setProducts(products);
+          setProductCount(count);
+          setLoading(false);
+        })
+        .catch(err => {
+          // AbortError is expected when a newer request supersedes this one.
+          if (err.name !== 'AbortError') {
+            setLoading(false);
+          }
+        });
+    };
+
+    if (shouldDebounceRef.current) {
+      shouldDebounceRef.current = false;
+      debounceTimer = setTimeout(doFetch, PRICE_DEBOUNCE_MS);
+    } else {
+      doFetch();
+    }
+
+    return () => {
+      controller.abort();
+      if (debounceTimer !== null) clearTimeout(debounceTimer);
+    };
+  }, [productFilters]);
+
+  // ─── Saved-view initialization effect ────────────────────────────────────
+  // Waits until the saved product IDs have loaded from the server, then injects
+  // them into productFilters and unblocks the fetch effect.
   useEffect(() => {
-    if (hasChanges) {
-      if (shouldDebounce) {
-        setLoading(true);
-        debouncedFetchProducts({
-          filters: productFilters,
-          onSuccess: (data: ProductResponse) => {
-            setProducts(data.products);
-            setProductCount(data.count);
-          },
-        }).then(() => {
-          setLoading(false);
-        });
-        setShouldDebounce(false);
-      } else {
-        setLoading(true);
-        fetchProducts({
-          filters: productFilters,
-          onSuccess: (data: ProductResponse) => {
-            setProducts(data.products);
-            setProductCount(data.count);
-          },
-        }).then(() => {
-          setLoading(false);
-        });
-      }
-      setHasChanges(false);
-    }
-  }, [hasChanges, productFilters, shouldDebounce, setLoading]);
+    if (!showSaved || initializedRef.current || !isSavedProductsLoaded) return;
 
+    initializedRef.current = true;
+
+    if (savedProducts.size > 0) {
+      // Updating productFilters triggers the fetch effect.
+      setProductFilters(prev => ({ ...prev, products: [...savedProducts] }));
+    } else {
+      // Nothing to fetch; resolve the loading state immediately.
+      setLoading(false);
+    }
+  }, [showSaved, isSavedProductsLoaded, savedProducts]);
+
+  // ─── Filter update handler ────────────────────────────────────────────────
+  // Functional updater removes productFilters from the closure, making this
+  // callback referentially stable for the lifetime of the component.
   const onUpdateProductFilters = useCallback(
     (updates: Partial<ProductFilters>) => {
-      const formattedUpdates = { ...updates };
-      // Reset page to 1 if filters other than page are updated
-      if (!('page' in formattedUpdates)) {
-        formattedUpdates.page = 1;
+      if ('price_min' in updates || 'price_max' in updates) {
+        shouldDebounceRef.current = true;
       }
-      // Debounce if updates came from keyboard input
-      if ('price_min' in formattedUpdates || 'price_max' in formattedUpdates) {
-        setShouldDebounce(true);
-      }
-      setProductFilters({ ...productFilters, ...formattedUpdates });
-      setSearchParams(
-        getSearchParamsFromFilters({ ...productFilters, ...formattedUpdates })
-      );
-      setHasChanges(true);
+      setProductFilters(prev => {
+        const next: ProductFilters = {
+          ...prev,
+          ...updates,
+          page: 'page' in updates ? (updates.page ?? 1) : 1,
+        };
+        setSearchParams(getSearchParamsFromFilters(next));
+        return next;
+      });
     },
-    [productFilters]
+    [setSearchParams]
   );
 
-  return {
-    loading,
-    products,
-    onUpdateProductFilters,
-    productCount,
-    productFilters,
-  };
+  return { loading, onUpdateProductFilters, productCount, productFilters, products };
 }

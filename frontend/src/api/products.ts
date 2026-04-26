@@ -1,59 +1,50 @@
-import { ProductFilters } from '../types';
+import { Product, ProductFilters } from '../types';
 import { productFiltersToJson } from '../utils/productFiltersToJson';
 
-// const URL_BASE = 'http://127.0.0.1:8000/products';
 const URL_BASE = 'https://reluctant-lura-concal-e5f49e86.koyeb.app/products';
 
-interface saveFunctionProps {
+interface ProductSearchResponse {
+  products: Product[];
+  count: number;
+}
+
+interface SaveProductProps {
   productIndex: string;
 }
 
 export async function fetchProducts({
   filters,
-  onSuccess,
+  signal,
 }: {
   filters: ProductFilters;
-  onSuccess: (data: any) => void;
-}) {
-  // TODO: Store url base in environment variables
+  signal?: AbortSignal;
+}): Promise<ProductSearchResponse> {
   const response = await fetch(`${URL_BASE}/search`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: productFiltersToJson(filters),
+    signal,
   });
-  const data = await response.json();
-  onSuccess(data);
+  return response.json();
 }
 
-export async function saveProduct({ productIndex }: saveFunctionProps) {
-  return await fetch(`${URL_BASE}/save`, {
+export function saveProduct({ productIndex }: SaveProductProps): Promise<Response> {
+  return fetch(`${URL_BASE}/save`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ productIndex }),
   });
 }
 
-export async function unsaveProduct({ productIndex }: saveFunctionProps) {
-  return await fetch(`${URL_BASE}/unsave`, {
+export function unsaveProduct({ productIndex }: SaveProductProps): Promise<Response> {
+  return fetch(`${URL_BASE}/unsave`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ productIndex }),
   });
 }
 
-export async function fetchSavedProducts() {
-  const response = await fetch(`${URL_BASE}/saved-products`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-  const data = await response.json();
-  return data;
+export async function fetchSavedProducts(): Promise<string[]> {
+  const response = await fetch(`${URL_BASE}/saved-products`);
+  return response.json();
 }
