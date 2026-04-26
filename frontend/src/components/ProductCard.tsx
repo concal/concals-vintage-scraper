@@ -4,6 +4,7 @@ import { SaveButton } from './SaveButton';
 import { Badge } from '@/generated/components/ui/badge';
 import { Card, CardContent } from '@/generated/components/ui/card';
 import { cn } from '@/generated/lib/utils';
+import { useAuthContext } from '@/context/AuthContext';
 
 interface ProductCardProps {
   onUpdateSavedProduct: (index: string) => void;
@@ -11,11 +12,9 @@ interface ProductCardProps {
   saved?: boolean;
 }
 
-export function ProductCard({
-  onUpdateSavedProduct,
-  product,
-  saved,
-}: ProductCardProps) {
+export function ProductCard({ onUpdateSavedProduct, product, saved }: ProductCardProps) {
+  const { isAuthed, token } = useAuthContext();
+
   return (
     <a
       className="no-underline"
@@ -45,17 +44,19 @@ export function ProductCard({
           </span>
           <Badge variant="secondary">{product.source}</Badge>
         </CardContent>
-        <SaveButton
-          onClick={() => {
-            onUpdateSavedProduct(product.index);
-            if (saved) {
-              unsaveProduct({ productIndex: product.index });
-            } else {
-              saveProduct({ productIndex: product.index });
-            }
-          }}
-          saved={saved}
-        />
+        {isAuthed && token && (
+          <SaveButton
+            onClick={() => {
+              onUpdateSavedProduct(product.index);
+              if (saved) {
+                unsaveProduct({ productIndex: product.index, token });
+              } else {
+                saveProduct({ productIndex: product.index, token });
+              }
+            }}
+            saved={saved}
+          />
+        )}
         {!product.available && (
           <Badge variant="secondary" className="absolute top-2 right-2">
             Sold

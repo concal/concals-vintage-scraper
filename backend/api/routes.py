@@ -1,6 +1,6 @@
 import os
 
-from fastapi import APIRouter, Body, Request, BackgroundTasks
+from fastapi import APIRouter, Body, Request, BackgroundTasks, Header, HTTPException, Depends
 from fastapi.responses import JSONResponse
 
 from models import ProductResponse, ProductFilters, ProductIndexBody
@@ -9,6 +9,20 @@ from run_scraper import run_scraper
 
 
 router = APIRouter()
+
+
+def verify_token(authorization: str = Header(None)):
+    token = os.environ.get("ADMIN_TOKEN")
+    if not token or authorization != f"Bearer {token}":
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+
+# =======================
+# = Auth check endpoint =
+# =======================
+@router.get("/auth", dependencies=[Depends(verify_token)], include_in_schema=False)
+def check_auth():
+    return {}
 
 
 # ===================
@@ -69,7 +83,7 @@ def list_all_products(request: Request, filters: ProductFilters = Body(...)):
 # =================
 # = Save endpoint =
 # =================
-@router.post("/save", response_description="Save product")
+@router.post("/save", response_description="Save product", dependencies=[Depends(verify_token)])
 def save_product(request: Request, body: ProductIndexBody = Body(...)):
 
     productIndex = body.productIndex
@@ -88,7 +102,7 @@ def save_product(request: Request, body: ProductIndexBody = Body(...)):
 # ===================
 # = Unsave endpoint =
 # ===================
-@router.post("/unsave", response_description="Unsave product")
+@router.post("/unsave", response_description="Unsave product", dependencies=[Depends(verify_token)])
 def save_product(request: Request, body: ProductIndexBody = Body(...)):
 
     productIndex = body.productIndex
@@ -107,7 +121,7 @@ def save_product(request: Request, body: ProductIndexBody = Body(...)):
 # ===============================
 # = get saved products endpoint =
 # ===============================
-@router.get("/saved-products", response_description="Get saved products")
+@router.get("/saved-products", response_description="Get saved products", dependencies=[Depends(verify_token)])
 def get_saved_products(request: Request):
 
     saved_products_collection = request.app.db["saved_products"]
