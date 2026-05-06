@@ -1,4 +1,4 @@
-# Scrapinator
+# Concal's Vintage Scraper
 
 A personal tool I built to keep tabs on vintage and archival clothing across multiple Shopify stores. Live at **[concal.io](https://concal.io)**.
 
