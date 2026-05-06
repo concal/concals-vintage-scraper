@@ -12,13 +12,13 @@ The scraper handles pagination, tracks whether items are still available, and de
 
 The storefront page aggregates listings from all of the tracked sellers into one simple page.
 
-<img width="800" height="755" alt="image" src="https://github.com/user-attachments/assets/13a18264-cff3-4f74-a945-95241daf825f" />
+<img width="1264" height="1195" alt="ScreenShot Tool -20260506151515" src="https://github.com/user-attachments/assets/705b5b4a-0964-47fb-b0c0-facdf06633bf" />
 
 ### Wishlist Page
 
 Authenticated users can save a wishlist of items that they want to keep track of.
 
-<img width="800" height="756" alt="image" src="https://github.com/user-attachments/assets/f4121d4e-0e1b-4a13-90f4-c19e430b0382" />
+<img width="1265" height="1195" alt="ScreenShot Tool -20260506151742" src="https://github.com/user-attachments/assets/8bc03572-0287-45f4-bc11-38860ddb8a8d" />
 
 ## Stack
 
